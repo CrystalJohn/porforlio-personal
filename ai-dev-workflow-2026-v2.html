@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Dev Workflow 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f9f8f5;
+    --surface: #fff;
+    --s2: #f3f2ee;
+    --border: #e5e3dc;
+    --border2: #ccc9bf;
+    --text: #18181a;
+    --muted: #78756f;
+    --hint: #b0ada6;
+    --accent: #1e3a8a;
+    --accent-l: #dbeafe;
+    --green: #166534;
+    --green-l: #dcfce7;
+    --amber: #92400e;
+    --amber-l: #fef3c7;
+    --red: #991b1b;
+    --red-l: #fee2e2;
+    --purple: #4c1d95;
+    --purple-l: #ede9fe;
+    --teal: #134e4a;
+    --teal-l: #ccfbf1;
+    --nav-w: 200px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    line-height: 1.65;
+  }
+
+  /* ── LAYOUT ── */
+  .shell {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    gap: 48px;
+    align-items: flex-start;
+  }
+
+  /* ── STICKY NAV ── */
+  .sidenav {
+    width: var(--nav-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 32px;
+    padding: 24px 0;
+  }
+
+  .nav-brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--hint);
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-list { list-style: none; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border2);
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .nav-item.active .nav-dot,
+  .nav-item:hover .nav-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .nav-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+    line-height: 1.3;
+  }
+
+  .nav-item.active .nav-label,
+  .nav-item:hover .nav-label { color: var(--accent); }
+
+  .nav-progress {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-progress-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar-bg {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .sidenav { display: none; }
+    .shell { padding: 0 16px; }
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 0 0 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 52px 0 36px;
+    border-bottom: 2px solid var(--text);
+    margin-bottom: 48px;
+  }
+
+  .eyebrow-top {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--hint);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .eyebrow-top::before {
+    content: '';
+    width: 20px;
+    height: 1.5px;
+    background: var(--hint);
+  }
+
+  h1 {
+    font-size: clamp(34px, 5vw, 58px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.0;
+    margin-bottom: 16px;
+  }
+
+  h1 .hl { color: var(--accent); }
+
+  .header-sub {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .header-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .htag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    border: 1px solid var(--border2);
+    padding: 4px 12px;
+    color: var(--muted);
+  }
+
+  /* ── HOOK ── */
+  .hook {
+    background: var(--text);
+    color: #e0ddd7;
+    padding: 22px 28px;
+    margin-bottom: 56px;
+    font-size: 14px;
+    line-height: 1.85;
+    border-left: 4px solid #fcd34d;
+  }
+
+  .hook strong { color: #fcd34d; }
+  .hook em { color: #a5b4fc; font-style: normal; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 64px; scroll-margin-top: 32px; }
+
+  .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--hint);
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .section-lead {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.7;
+    max-width: 560px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── PHASE TIMELINE ── */
+  .timeline { margin-bottom: 8px; }
+
+  .phase {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  .phase-spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 52px;
+    flex-shrink: 0;
+    padding-top: 18px;
+  }
+
+  .phase-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 2px solid;
+    z-index: 1;
+  }
+
+  .phase-line {
+    width: 2px;
+    flex: 1;
+    min-height: 24px;
+    margin: 4px 0;
+  }
+
+  .phase:last-child .phase-line { display: none; }
+
+  .phase.morning .phase-icon { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+  .phase.morning .phase-line { background: #fcd34d; opacity: 0.3; }
+  .phase.morning .phase-tag { background: var(--amber-l); color: var(--amber); }
+
+  .phase.deepwork .phase-icon { background: var(--accent-l); color: var(--accent); border-color: #93c5fd; }
+  .phase.deepwork .phase-line { background: #93c5fd; opacity: 0.3; }
+  .phase.deepwork .phase-tag { background: var(--accent-l); color: var(--accent); }
+
+  .phase.debug .phase-icon { background: #dcfce7; color: #166534; border-color: #86efac; }
+  .phase.debug .phase-line { background: #86efac; opacity: 0.3; }
+  .phase.debug .phase-tag { background: var(--green-l); color: var(--green); }
+
+  .phase.reflect .phase-icon { background: var(--purple-l); color: var(--purple); border-color: #c4b5fd; }
+  .phase.reflect .phase-line { background: #c4b5fd; opacity: 0.3; }
+  .phase.reflect .phase-tag { background: var(--purple-l); color: var(--purple); }
+
+  .phase-content {
+    flex: 1;
+    min-width: 0;
+    padding: 14px 0 32px 16px;
+  }
+
+  .phase-header-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+
+  .phase-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  .phase-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+
+  .phase-duration {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--hint);
+    margin-left: auto;
+  }
+
+  .step-list { list-style: none; margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+
+  .step-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .step-item:hover { border-color: var(--border2); }
+
+  .step-left { flex-shrink: 0; min-width: 80px; }
+
+  .tool-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 3px 9px;
+    display: inline-block;
+    border-radius: 3px;
+    border: 1px solid;
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+
+  .tb-cursor   { background: var(--accent-l); color: var(--accent); border-color: #93c5fd; }
+  .tb-claude   { background: var(--amber-l); color: var(--amber); border-color: #fcd34d; }
+  .tb-chat     { background: var(--teal-l); color: var(--teal); border-color: #5eead4; }
+  .tb-git      { background: var(--purple-l); color: var(--purple); border-color: #c4b5fd; }
+  .tb-habit    { background: var(--red-l); color: var(--red); border-color: #fca5a5; }
+  .tb-claude-c { background: var(--green-l); color: var(--green); border-color: #86efac; }
+
+  .step-right { flex: 1; min-width: 0; }
+
+  .step-name {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .step-prompt {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--accent-l);
+    padding: 6px 10px;
+    margin-top: 8px;
+    line-height: 1.6;
+    font-style: italic;
+    border-left: 2px solid var(--accent);
+  }
+
+  /* ── TECHNIQUE CARDS ── */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .tech-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tech-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--hint);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .tech-name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .tech-body {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .tech-prompt {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 8px 10px;
+    line-height: 1.65;
+    font-style: italic;
+    border-left: 2px solid;
+  }
+
+  .tc-1 { border-top: 2px solid #3b82f6; }
+  .tc-1 .tech-prompt { color: #1e3a8a; background: var(--accent-l); border-color: #3b82f6; }
+
+  .tc-2 { border-top: 2px solid #22c55e; }
+  .tc-2 .tech-prompt { color: var(--green); background: var(--green-l); border-color: #22c55e; }
+
+  .tc-3 { border-top: 2px solid #f59e0b; }
+  .tc-3 .tech-prompt { color: var(--amber); background: var(--amber-l); border-color: #f59e0b; }
+
+  .tc-4 { border-top: 2px solid #8b5cf6; }
+  .tc-4 .tech-prompt { color: var(--purple); background: var(--purple-l); border-color: #8b5cf6; }
+
+  .tc-5 { border-top: 2px solid #14b8a6; }
+  .tc-5 .tech-prompt { color: var(--teal); background: var(--teal-l); border-color: #14b8a6; }
+
+  .tc-6 { border-top: 2px solid #ef4444; }
+  .tc-6 .tech-prompt { color: var(--red); background: var(--red-l); border-color: #ef4444; }
+
+  /* ── SYSTEM THINKING ── */
+  .sys-list { display: flex; flex-direction: column; gap: 0; }
+
+  .sys-item {
+    display: flex;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+  }
+
+  .sys-item:last-child { border-bottom: 1px solid var(--border); }
+  .sys-item:hover { background: var(--s2); }
+
+  .sys-accent {
+    width: 4px;
+    flex-shrink: 0;
+  }
+
+  .s-blue .sys-accent   { background: #3b82f6; }
+  .s-green .sys-accent  { background: #22c55e; }
+  .s-amber .sys-accent  { background: #f59e0b; }
+  .s-purple .sys-accent { background: #8b5cf6; }
+  .s-teal .sys-accent   { background: #14b8a6; }
+  .s-red .sys-accent    { background: #ef4444; }
+
+  .sys-body { padding: 16px 18px; display: flex; gap: 16px; align-items: flex-start; flex: 1; }
+
+  @media (max-width: 540px) { .sys-body { flex-direction: column; } }
+
+  .sys-meta { flex-shrink: 0; width: 140px; }
+  .sys-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--hint);
+    margin-bottom: 4px;
+  }
+  .sys-title { font-size: 13px; font-weight: 700; }
+
+  .sys-right { flex: 1; min-width: 0; }
+  .sys-desc { font-size: 12px; color: var(--muted); line-height: 1.65; margin-bottom: 8px; }
+  .sys-prompt {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--accent-l);
+    padding: 7px 10px;
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  /* ── TOOL STACK ── */
+  .tool-stack { border: 1px solid var(--border2); background: var(--surface); }
+
+  .ts-head {
+    display: grid;
+    grid-template-columns: 160px 1fr 110px 130px;
+    gap: 0;
+    padding: 10px 20px;
+    background: var(--s2);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .ts-head span {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--hint);
+  }
+
+  .ts-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 110px 130px;
+    gap: 0;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+    transition: background 0.15s;
+  }
+
+  .ts-row:last-child { border-bottom: none; }
+  .ts-row:hover { background: var(--s2); }
+
+  .ts-name { font-weight: 700; font-size: 13px; padding-top: 1px; }
+  .ts-role { font-size: 12px; color: var(--muted); line-height: 1.6; padding-right: 16px; }
+  .ts-price { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--green); padding-top: 1px; }
+  .ts-when { font-size: 11px; color: var(--hint); }
+
+  @media (max-width: 640px) {
+    .ts-head { display: none; }
+    .ts-row { grid-template-columns: 1fr; gap: 4px; }
+    .ts-price, .ts-when { font-size: 10px; }
+  }
+
+  .tool-note {
+    background: var(--green-l);
+    border: 1px solid #86efac;
+    border-left: 3px solid var(--green);
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--green);
+    line-height: 1.7;
+    margin-top: 14px;
+  }
+
+  .tool-note strong { color: var(--text); }
+
+  /* ── ANTI-PATTERNS ── */
+  .ap-list { display: flex; flex-direction: column; gap: 0; }
+
+  .ap-item {
+    border: 1px solid var(--border);
+    border-bottom: none;
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .ap-item:last-child { border-bottom: 1px solid var(--border); }
+
+  .ap-stripe {
+    width: 4px;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  .ap-body {
+    padding: 16px 18px;
+    flex: 1;
+  }
+
+  .ap-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .ap-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    background: var(--red-l);
+    color: var(--red);
+    border: 1px solid #fca5a5;
+    padding: 2px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .ap-title { font-size: 13px; font-weight: 700; }
+  .ap-desc { font-size: 12px; color: var(--muted); line-height: 1.65; margin-bottom: 8px; }
+
+  .ap-fix {
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    color: var(--green);
+    background: var(--green-l);
+    border: 1px solid #86efac;
+    padding: 5px 12px;
+    display: inline-block;
+  }
+
+  /* ── VERDICT ── */
+  .verdict {
+    background: var(--text);
+    color: #e0ddd7;
+    padding: 32px 36px;
+    margin-bottom: 56px;
+  }
+
+  .verdict-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fcd34d;
+    margin-bottom: 10px;
+  }
+
+  .verdict h3 { font-size: 20px; font-weight: 700; margin-bottom: 14px; color: #f9f8f5; }
+  .verdict p { font-size: 13px; color: #a09d97; line-height: 1.8; margin-bottom: 20px; }
+
+  .week-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+
+  .week-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    align-items: flex-start;
+  }
+
+  .week-item:last-child { border-bottom: none; }
+
+  .week-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #fcd34d;
+    flex-shrink: 0;
+    min-width: 80px;
+    margin-top: 2px;
+  }
+
+  .week-text { font-size: 13px; color: #c8c4be; line-height: 1.65; }
+  .week-text strong { color: #f9f8f5; }
+
+  /* ── VOCAB ── */
+  .vocab-list { display: flex; flex-direction: column; gap: 0; }
+
+  .vocab-item {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    background: var(--surface);
+    transition: background 0.15s;
+  }
+
+  .vocab-item:last-child { border-bottom: 1px solid var(--border); }
+  .vocab-item:hover { background: var(--s2); }
+
+  .vocab-accent { width: 3px; background: var(--purple); flex-shrink: 0; }
+
+  .vocab-body {
+    padding: 14px 18px;
+    display: flex;
+    gap: 20px;
+    flex: 1;
+    align-items: flex-start;
+  }
+
+  @media (max-width: 540px) { .vocab-body { flex-direction: column; gap: 8px; } }
+
+  .vocab-term { flex-shrink: 0; width: 200px; }
+  .vocab-en { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .vocab-pr { font-size: 10px; color: var(--hint); font-style: italic; }
+
+  .vocab-right { flex: 1; }
+  .vocab-vn { font-size: 12px; color: #555; line-height: 1.55; margin-bottom: 6px; }
+  .vocab-vn strong { color: var(--amber); }
+  .vocab-ex {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--accent-l);
+    padding: 6px 10px;
+    line-height: 1.55;
+    font-style: italic;
+  }
+
+  /* ── NEXT RESEARCH ── */
+  .next-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border2); border: 1px solid var(--border2); }
+  @media (max-width:600px) { .next-grid { grid-template-columns: 1fr; } }
+
+  .next-card {
+    background: var(--surface);
+    padding: 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .next-card:hover { background: var(--accent-l); }
+  .next-card:hover .next-arrow { color: var(--accent); }
+
+  .next-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--hint);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .next-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; line-height: 1.4; }
+  .next-desc { font-size: 11px; color: var(--muted); line-height: 1.55; }
+  .next-arrow { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--hint); margin-top: 10px; display: block; transition: color 0.15s; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border2);
+    padding: 24px 0 0;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--hint);
+  }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── STICKY SIDENAV ── -->
+  <nav class="sidenav">
+    <div class="nav-brand">Workflow Guide #05</div>
+    <ul class="nav-list">
+      <li><a class="nav-item active" href="#workflow">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Daily workflow</span>
+      </a></li>
+      <li><a class="nav-item" href="#learn">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Learn while working</span>
+      </a></li>
+      <li><a class="nav-item" href="#systems">
+        <div class="nav-dot"></div>
+        <span class="nav-label">System thinking</span>
+      </a></li>
+      <li><a class="nav-item" href="#tools">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Tool stack</span>
+      </a></li>
+      <li><a class="nav-item" href="#antipatterns">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Anti-patterns</span>
+      </a></li>
+      <li><a class="nav-item" href="#verdict">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Verdict</span>
+      </a></li>
+      <li><a class="nav-item" href="#vocab">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Vocabulary</span>
+      </a></li>
+    </ul>
+    <div class="nav-progress">
+      <div class="nav-progress-label">Reading progress</div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <header>
+      <div class="eyebrow-top">Tech Market Research Agent · March 2026</div>
+      <h1>AI Dev<br><span class="hl">Daily Workflow</span></h1>
+      <p class="header-sub">Workflow thực tế của frontend/fullstack developer — vừa học, vừa code, vừa build tư duy hệ thống với AI. Không lý thuyết.</p>
+      <div class="header-tags">
+        <span class="htag">Fresher → Junior</span>
+        <span class="htag">Next.js · React</span>
+        <span class="htag">Cursor · Claude Code</span>
+        <span class="htag">2026 pattern</span>
+      </div>
+    </header>
+
+    <div class="hook">
+      🧠 <strong>Core insight:</strong> Developers giỏi nhất năm 2026 không phải người <em>code nhanh nhất</em> — họ là người <strong>route đúng task đến đúng tool và dùng AI để học trong lúc làm việc.</strong> Hai kỹ năng này cộng lại = tăng tốc mà không mất critical thinking.
+    </div>
+
+    <!-- 01 DAILY WORKFLOW -->
+    <section class="section" id="workflow">
+      <div class="eyebrow">01 — Daily workflow</div>
+      <h2>Một ngày làm việc — Fresher → Junior Full-Stack</h2>
+      <p class="section-lead">4 phases. Color-coded. Mỗi phase có tool riêng, mục tiêu riêng. Không phải rule — là starting template để bạn adapt.</p>
+
+      <div class="timeline">
+
+        <!-- MORNING -->
+        <div class="phase morning">
+          <div class="phase-spine">
+            <div class="phase-icon">AM</div>
+            <div class="phase-line"></div>
+          </div>
+          <div class="phase-content">
+            <div class="phase-header-row">
+              <div class="phase-title">Morning — Plan & Context</div>
+              <div class="phase-tag">Buổi sáng</div>
+              <div class="phase-duration">~30 min</div>
+            </div>
+            <ul class="step-list">
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-chat">Claude Chat</span></div>
+                <div class="step-right">
+                  <div class="step-name">Review task + edge cases</div>
+                  <div class="step-desc">Paste task vào Claude trước khi mở IDE. Học hiểu domain trước khi code.</div>
+                  <div class="step-prompt">"Explain this requirement. What are 3 edge cases I should handle?"</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-chat">Claude Chat</span></div>
+                <div class="step-right">
+                  <div class="step-name">Break task thành subtasks</div>
+                  <div class="step-desc">Decompose task lớn có ordered dependency. Tư duy hệ thống bắt đầu từ đây.</div>
+                  <div class="step-prompt">"Break this into 4–6 subtasks, ordered by dependency."</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-cursor">Cursor Chat</span></div>
+                <div class="step-right">
+                  <div class="step-name">Sketch architecture trong codebase</div>
+                  <div class="step-desc">Mở codebase trong Cursor, hỏi trước khi viết bất kỳ dòng code nào.</div>
+                  <div class="step-prompt">"Given this codebase structure, where should this feature live?"</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-git">Ticket</span></div>
+                <div class="step-right">
+                  <div class="step-name">Commit to a plan — viết 3–5 bullets trước khi code</div>
+                  <div class="step-desc">Forcing function. Senior devs làm điều này mọi lúc. Ngăn "code blindly" trap.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- DEEP WORK -->
+        <div class="phase deepwork">
+          <div class="phase-spine">
+            <div class="phase-icon">WK</div>
+            <div class="phase-line"></div>
+          </div>
+          <div class="phase-content">
+            <div class="phase-header-row">
+              <div class="phase-title">Core Work — Code + Learn Loop</div>
+              <div class="phase-tag">Deep Work</div>
+              <div class="phase-duration">~4–5 hrs</div>
+            </div>
+            <ul class="step-list">
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-cursor">Cursor Tab</span></div>
+                <div class="step-right">
+                  <div class="step-name">Autocomplete + inline edits — "fast typist layer"</div>
+                  <div class="step-desc">Variable names, function stubs, imports. Accept/reject nhanh. Không dừng flow state.</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-cursor">Cursor Composer</span></div>
+                <div class="step-right">
+                  <div class="step-name">Multi-file feature — Cmd+I → describe → diff → accept</div>
+                  <div class="step-desc">Visual diff = bạn control được output. Không accept toàn bộ một lúc.</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-claude-c">Claude Code</span></div>
+                <div class="step-right">
+                  <div class="step-name">Complex refactor / new module — 10+ files</div>
+                  <div class="step-desc">Handoff khi task cần architectural thinking. Describe trong terminal, review output.</div>
+                  <div class="step-prompt">"Refactor auth to use JWT, maintain existing API contracts."</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-habit">Key habit</span></div>
+                <div class="step-right">
+                  <div class="step-name">Learn from AI output — KHÔNG accept blindly</div>
+                  <div class="step-desc">Với mỗi pattern mới, hỏi tại sao. Đây là học nhanh nhất có thể — trong context thật.</div>
+                  <div class="step-prompt">"Explain why you used this pattern, not [alternative]."</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- DEBUG -->
+        <div class="phase debug">
+          <div class="phase-spine">
+            <div class="phase-icon">QA</div>
+            <div class="phase-line"></div>
+          </div>
+          <div class="phase-content">
+            <div class="phase-header-row">
+              <div class="phase-title">Debug & Review Loop</div>
+              <div class="phase-tag">Quality</div>
+              <div class="phase-duration">~1–2 hrs</div>
+            </div>
+            <ul class="step-list">
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-claude-c">Claude Code</span></div>
+                <div class="step-right">
+                  <div class="step-name">Bug hunt — root cause analysis, không chỉ xin fix</div>
+                  <div class="step-desc">1M context = trace bug qua toàn bộ codebase. Paste error + stack trace.</div>
+                  <div class="step-prompt">"Walk me through root cause analysis. What are 3 possible causes?"</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-cursor">Cursor</span></div>
+                <div class="step-right">
+                  <div class="step-name">Write tests — edge cases + error states</div>
+                  <div class="step-desc">Generate Jest tests, review để học test patterns. Tests là documentation.</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-chat">Claude Chat</span></div>
+                <div class="step-right">
+                  <div class="step-name">Self code review trước khi push PR</div>
+                  <div class="step-desc">Paste diff, hỏi senior engineer perspective. Build review mindset trước khi bị review.</div>
+                  <div class="step-prompt">"Review this as a senior engineer. What would you flag?"</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- REFLECT -->
+        <div class="phase reflect">
+          <div class="phase-spine">
+            <div class="phase-icon">PM</div>
+          </div>
+          <div class="phase-content">
+            <div class="phase-header-row">
+              <div class="phase-title">Evening — Reflect & Level Up</div>
+              <div class="phase-tag">High ROI</div>
+              <div class="phase-duration">~30 min</div>
+            </div>
+            <ul class="step-list">
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-chat">Claude Chat</span></div>
+                <div class="step-right">
+                  <div class="step-name">Extract concepts learned hôm nay</div>
+                  <div class="step-desc">Convert work experience thành structured learning. Compound learning theo ngày.</div>
+                  <div class="step-prompt">"Today I implemented X. What concepts did I use? What should I study deeper?"</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <div class="step-left"><span class="tool-badge tb-git">Obsidian</span></div>
+                <div class="step-right">
+                  <div class="step-name">Ghi 1 architectural insight vào notes</div>
+                  <div class="step-desc">Sau 6 tháng bạn có personal design pattern library không mua được bằng tutorial nào.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 02 LEARN WHILE WORKING -->
+    <section class="section" id="learn">
+      <div class="eyebrow">02 — Learn while working</div>
+      <h2>6 kỹ thuật học trong lúc làm</h2>
+      <p class="section-lead">Không cần học riêng. Mỗi task là cơ hội học — nếu bạn biết prompt đúng cách.</p>
+
+      <div class="tech-grid">
+        <div class="tech-card tc-1">
+          <div class="tech-num">Technique 01</div>
+          <div class="tech-name">Explain Before Accept</div>
+          <div class="tech-body">Mỗi khi AI generate code, KHÔNG accept ngay. Hỏi "explain this" trước. Học concept trong context thật, không phải tutorial giả tạo.</div>
+          <div class="tech-prompt">"Before I accept, explain why you used useCallback here instead of a regular function."</div>
+        </div>
+        <div class="tech-card tc-2">
+          <div class="tech-num">Technique 02</div>
+          <div class="tech-name">Intentional Bug Creation</div>
+          <div class="tech-body">Khi gặp bug, KHÔNG hỏi "fix this." Hỏi causes và diagnosis process. Học debugging thinking, không chỉ nhận answer.</div>
+          <div class="tech-prompt">"What are 3 possible causes? Walk me through how to diagnose each."</div>
+        </div>
+        <div class="tech-card tc-3">
+          <div class="tech-num">Technique 03</div>
+          <div class="tech-name">Second Opinion</div>
+          <div class="tech-body">Sau khi nhận solution, hỏi downside. Train critical thinking. Không trust AI blindly — bạn là người duy nhất có full context.</div>
+          <div class="tech-prompt">"What's the downside of this approach? What would a senior engineer object to?"</div>
+        </div>
+        <div class="tech-card tc-4">
+          <div class="tech-num">Technique 04</div>
+          <div class="tech-name">Architecture First</div>
+          <div class="tech-body">Trước khi code bất kỳ feature nào, hỏi design questions, không coding questions. "Should I even have this?" là câu hỏi senior nhất.</div>
+          <div class="tech-prompt">"3 architectures for this feature, trade-offs, which fits a 10k-user app?"</div>
+        </div>
+        <div class="tech-card tc-5">
+          <div class="tech-num">Technique 05</div>
+          <div class="tech-name">Rubber Duck 2.0</div>
+          <div class="tech-body">Thay vì stuck 30 phút im lặng, explain vấn đề cho Claude. Thường bạn tự tìm ra answer trong quá trình explain — đây là active thinking.</div>
+          <div class="tech-prompt">"I'm trying to do X but getting Y. Here's my approach: [explanation]. What am I missing?"</div>
+        </div>
+        <div class="tech-card tc-6">
+          <div class="tech-num">Technique 06</div>
+          <div class="tech-name">Pattern Recognition Loop</div>
+          <div class="tech-body">Khi AI implement xong, hỏi tên pattern và nơi áp dụng trong codebase. Build design pattern vocabulary systematically.</div>
+          <div class="tech-prompt">"What design pattern is this? Where else in my Next.js app should I apply it?"</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 SYSTEM THINKING -->
+    <section class="section" id="systems">
+      <div class="eyebrow">03 — System thinking</div>
+      <h2>Nâng cao tư duy hệ thống</h2>
+      <p class="section-lead">Tư duy hệ thống không đến từ sách. Nó đến từ việc hỏi đúng câu hỏi trong mỗi decision nhỏ, mỗi ngày.</p>
+
+      <div class="sys-list">
+        <div class="sys-item s-blue">
+          <div class="sys-accent"></div>
+          <div class="sys-body">
+            <div class="sys-meta">
+              <div class="sys-tag">Before implement</div>
+              <div class="sys-title">System Design First</div>
+            </div>
+            <div class="sys-right">
+              <div class="sys-desc">Luôn hỏi design questions trước coding questions. Hiểu big picture trước khi viết dòng đầu tiên. Key components, data flows, failure points.</div>
+              <div class="sys-prompt">"I'm building [feature]. What are the key components, data flows, and potential failure points? Give me 3 architectural approaches and trade-offs."</div>
+            </div>
+          </div>
+        </div>
+        <div class="sys-item s-green">
+          <div class="sys-accent"></div>
+          <div class="sys-body">
+            <div class="sys-meta">
+              <div class="sys-tag">After implement</div>
+              <div class="sys-title">Scalability Thinking</div>
+            </div>
+            <div class="sys-right">
+              <div class="sys-desc">Không optimize prematurely — nhưng biết bottleneck ở đâu là tư duy hệ thống thật sự. Hỏi sau khi implement.</div>
+              <div class="sys-prompt">"This works for 100 users. What breaks first at 10,000? At 100,000? What would I need to change at each scale point?"</div>
+            </div>
+          </div>
+        </div>
+        <div class="sys-item s-amber">
+          <div class="sys-accent"></div>
+          <div class="sys-body">
+            <div class="sys-meta">
+              <div class="sys-tag">Before refactor</div>
+              <div class="sys-title">Dependency Mapping</div>
+            </div>
+            <div class="sys-right">
+              <div class="sys-desc">Senior devs luôn hỏi "cái này ảnh hưởng gì" trước khi thay đổi. AI có thể scan codebase và map dependencies nhanh hơn bạn làm tay.</div>
+              <div class="sys-prompt">"If I change this function signature, what else breaks? Map all dependencies. What's the safest refactor order?"</div>
+            </div>
+          </div>
+        </div>
+        <div class="sys-item s-purple">
+          <div class="sys-accent"></div>
+          <div class="sys-body">
+            <div class="sys-meta">
+              <div class="sys-tag">Every feature</div>
+              <div class="sys-title">Security Review</div>
+            </div>
+            <div class="sys-right">
+              <div class="sys-desc">Fresher thường không nghĩ đến security. Habit này làm bạn khác biệt ngay lập tức trong code review và phỏng vấn.</div>
+              <div class="sys-prompt">"Review this API endpoint as a security engineer. Attack vectors? Missing input validation? Data exposure risks?"</div>
+            </div>
+          </div>
+        </div>
+        <div class="sys-item s-teal">
+          <div class="sys-accent"></div>
+          <div class="sys-body">
+            <div class="sys-meta">
+              <div class="sys-tag">When it feels slow</div>
+              <div class="sys-title">Performance Profiling</div>
+            </div>
+            <div class="sys-right">
+              <div class="sys-desc">Đừng optimize khi chưa biết WHERE. "Premature optimization is the root of all evil." Hỏi trước, optimize sau.</div>
+              <div class="sys-prompt">"Analyze this component. Re-render triggers? What's the likely bottleneck? Should I even optimize this?"</div>
+            </div>
+          </div>
+        </div>
+        <div class="sys-item s-red">
+          <div class="sys-accent"></div>
+          <div class="sys-body">
+            <div class="sys-meta">
+              <div class="sys-tag">Weekly habit</div>
+              <div class="sys-title">Write ADRs</div>
+            </div>
+            <div class="sys-right">
+              <div class="sys-desc">Architecture Decision Records. Mỗi tuần 1 cái. Sau 3 tháng: bạn có system thinking portfolio thật không mua được bằng course nào.</div>
+              <div class="sys-prompt">"Help me write an ADR for choosing [technology]. Include: context, decision, alternatives, consequences, trade-offs."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 TOOL STACK -->
+    <section class="section" id="tools">
+      <div class="eyebrow">04 — Tool stack</div>
+      <h2>Recommended stack cho fresher full-stack</h2>
+      <p class="section-lead">5 tools. Mỗi cái có role riêng. Không dùng hết cùng lúc ngay — roll out từng bước.</p>
+
+      <div class="tool-stack">
+        <div class="ts-head">
+          <span>Tool</span>
+          <span>Role trong workflow</span>
+          <span>Price</span>
+          <span>Khi nào dùng</span>
+        </div>
+        <div class="ts-row">
+          <div class="ts-name">Cursor Pro</div>
+          <div class="ts-role">Primary IDE — autocomplete, inline edits, Composer multi-file. "Hands on keyboard" layer hàng ngày. Không phá flow state.</div>
+          <div class="ts-price">$20/mo</div>
+          <div class="ts-when">80% thời gian coding</div>
+        </div>
+        <div class="ts-row">
+          <div class="ts-name">Claude.ai Pro</div>
+          <div class="ts-role">Thinking partner — architecture questions, learning concepts, self code review, PR descriptions. Không phải coding tool — là reasoning tool.</div>
+          <div class="ts-price">$20/mo</div>
+          <div class="ts-when">Planning + learning</div>
+        </div>
+        <div class="ts-row">
+          <div class="ts-name">Claude Code</div>
+          <div class="ts-role">Agentic executor — complex refactors, multi-file changes, codebase analysis. Terminal-native. 1M context. Dùng khi sẵn sàng "step away and review."</div>
+          <div class="ts-price">~$6/day avg</div>
+          <div class="ts-when">Tasks chạm 10+ files</div>
+        </div>
+        <div class="ts-row">
+          <div class="ts-name">Windsurf Free</div>
+          <div class="ts-role">Budget Cursor alternative. 90% của Cursor ở $0. Tốt khi hết credits Cursor hoặc muốn compare output.</div>
+          <div class="ts-price">Free / $15 Pro</div>
+          <div class="ts-when">Budget constraint</div>
+        </div>
+        <div class="ts-row">
+          <div class="ts-name">Gemini API</div>
+          <div class="ts-role">Large document processing, phân tích codebase lớn, đọc specs dài. 2M context = không đối thủ cho task này.</div>
+          <div class="ts-price">$2/M tokens</div>
+          <div class="ts-when">Large context tasks</div>
+        </div>
+      </div>
+
+      <div class="tool-note">
+        <strong>Budget-friendly start:</strong> Cursor Pro ($20) + Claude.ai Pro ($20) = $40/tháng. Sweet spot nhất cho fresher. Claude Code thêm vào sau khi quen workflow. Hoặc Windsurf Free + Claude.ai Pro = chỉ $20/tháng để bắt đầu.
+      </div>
+    </section>
+
+    <!-- 05 ANTI-PATTERNS -->
+    <section class="section" id="antipatterns">
+      <div class="eyebrow">05 — Anti-patterns</div>
+      <h2>4 bẫy phổ biến nhất — tránh ngay</h2>
+      <p class="section-lead">Không phải mọi thứ AI làm đều đúng. Và không phải mọi cách dùng AI đều giúp bạn grow.</p>
+
+      <div class="ap-list">
+        <div class="ap-item">
+          <div class="ap-stripe"></div>
+          <div class="ap-body">
+            <div class="ap-head">
+              <span class="ap-label">Trap 01</span>
+              <div class="ap-title">Accept & Forget — Copy AI code mà không đọc</div>
+            </div>
+            <div class="ap-desc">AI generate, bạn copy/paste không hiểu tại sao. Short-term nhanh. Long-term: bạn không grow, introduce security bugs không biết. 65% developers report AI "misses context" — bạn là người duy nhất có thể catch điều đó.</div>
+            <div class="ap-fix">→ FIX: Luôn read diff trước khi accept. Hỏi "explain this" cho mỗi pattern mới.</div>
+          </div>
+        </div>
+        <div class="ap-item">
+          <div class="ap-stripe"></div>
+          <div class="ap-body">
+            <div class="ap-head">
+              <span class="ap-label">Trap 02</span>
+              <div class="ap-title">Tool Sprawl — Dùng quá nhiều tools không có chiến lược</div>
+            </div>
+            <div class="ap-desc">Cursor + Claude Code + Copilot + Windsurf + Codex cùng lúc = overhead không có benefit. Bạn không master được cái nào. Devs thành công nhất chọn intentionally, không phải dùng hết.</div>
+            <div class="ap-fix">→ FIX: Start với Cursor + Claude Chat. Add tool chỉ khi có workflow cụ thể cần nó.</div>
+          </div>
+        </div>
+        <div class="ap-item">
+          <div class="ap-stripe"></div>
+          <div class="ap-body">
+            <div class="ap-head">
+              <span class="ap-label">Trap 03</span>
+              <div class="ap-title">Vibe Coding mọi thứ — Describe, accept, không think</div>
+            </div>
+            <div class="ap-desc">"Build me a dashboard" → accept toàn bộ → submit PR. Bạn sẽ không hiểu codebase của mình, không maintain được, không trả lời câu hỏi trong code review. AI accelerates typing — không replace thinking.</div>
+            <div class="ap-fix">→ FIX: Plan trước, implement từng phần, understand từng piece. AI là accelerator, bạn là architect.</div>
+          </div>
+        </div>
+        <div class="ap-item">
+          <div class="ap-stripe"></div>
+          <div class="ap-body">
+            <div class="ap-head">
+              <span class="ap-label">Trap 04</span>
+              <div class="ap-title">Chỉ hỏi coding questions, không hỏi design questions</div>
+            </div>
+            <div class="ap-desc">"How do I write this function?" sẽ không giúp bạn grow thành senior. "Should I even have this function?" — đây mới là senior thinking. AI trả lời được cả hai, nhưng bạn phải biết hỏi đúng loại câu.</div>
+            <div class="ap-fix">→ FIX: Trước mỗi task, 5 phút hỏi design questions. Code answers sau.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 VERDICT -->
+    <div class="verdict" id="verdict">
+      <div class="verdict-eyebrow">Verdict</div>
+      <h3>Workflow bạn nên bắt đầu ngay tuần này</h3>
+      <p>Đây không phải workflow lý thuyết. Đây là pattern của developers đang ship nhanh nhất năm 2026. Roll out theo thứ tự — không cần làm hết ngay.</p>
+      <ul class="week-list">
+        <li class="week-item">
+          <span class="week-label">Tuần 1</span>
+          <span class="week-text"><strong>Setup Cursor Pro.</strong> Dùng Tab completion cho mọi thứ. Habit quan trọng nhất: LUÔN đọc suggestion trước khi accept.</span>
+        </li>
+        <li class="week-item">
+          <span class="week-label">Tuần 2</span>
+          <span class="week-text"><strong>Thêm Claude.ai Pro.</strong> Mỗi buổi sáng: paste task vào Claude, hỏi design questions trước khi mở IDE.</span>
+        </li>
+        <li class="week-item">
+          <span class="week-label">Tuần 3</span>
+          <span class="week-text"><strong>Evening Reflect 30 min.</strong> Extract 1 concept learned mỗi ngày. Ghi vào Obsidian. Compound learning bắt đầu.</span>
+        </li>
+        <li class="week-item">
+          <span class="week-label">Tuần 4+</span>
+          <span class="week-text"><strong>Cursor Composer cho multi-file tasks.</strong> Self code review với Claude trước mỗi PR. Bắt đầu viết ADRs.</span>
+        </li>
+        <li class="week-item">
+          <span class="week-label">Tháng 2–3</span>
+          <span class="week-text"><strong>Claude Code cho complex refactors.</strong> Code quality tăng rõ. Bạn có thể articulate "why" sau mọi decision. Senior devs notice.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 07 VOCAB -->
+    <section class="section" id="vocab">
+      <div class="eyebrow">07 — Vocabulary boost</div>
+      <h2>5 terms quan trọng từ report này</h2>
+      <p class="section-lead">Dùng được những từ này trong context thật = tín hiệu mạnh với interviewer và team lead.</p>
+
+      <div class="vocab-list">
+        <div class="vocab-item">
+          <div class="vocab-accent"></div>
+          <div class="vocab-body">
+            <div class="vocab-term">
+              <div class="vocab-en">Flow State</div>
+              <div class="vocab-pr">/fləʊ steɪt/ noun</div>
+            </div>
+            <div class="vocab-right">
+              <div class="vocab-vn">🇻🇳 <strong>Trạng thái tập trung cao độ</strong> — khi bạn code không bị interrupt. Cursor thiết kế không phá vỡ flow; Claude Code dùng khi bạn sẵn sàng "delegate and step away."</div>
+              <div class="vocab-ex">"Cursor keeps me in flow state. Claude Code I use when I'm ready to step back and let it run."</div>
+            </div>
+          </div>
+        </div>
+        <div class="vocab-item">
+          <div class="vocab-accent"></div>
+          <div class="vocab-body">
+            <div class="vocab-term">
+              <div class="vocab-en">ADR</div>
+              <div class="vocab-pr">/ˌeɪ diː ˈɑːr/ noun</div>
+            </div>
+            <div class="vocab-right">
+              <div class="vocab-vn">🇻🇳 <strong>Architecture Decision Record</strong> — tài liệu ghi quyết định kiến trúc: context, decision, alternatives, consequences. Senior devs viết ADRs. Tích lũy = system thinking portfolio thật.</div>
+              <div class="vocab-ex">"Write an ADR for why we chose PostgreSQL over MongoDB — include the trade-offs we discussed."</div>
+            </div>
+          </div>
+        </div>
+        <div class="vocab-item">
+          <div class="vocab-accent"></div>
+          <div class="vocab-body">
+            <div class="vocab-term">
+              <div class="vocab-en">Premature Optimization</div>
+              <div class="vocab-pr">/priːˈmætʃər/ noun</div>
+            </div>
+            <div class="vocab-right">
+              <div class="vocab-vn">🇻🇳 <strong>Tối ưu hóa trước khi cần</strong> — "the root of all evil" (Donald Knuth). Freshers hay bị trap này. Rule: make it work → make it right → make it fast. Theo đúng thứ tự.</div>
+              <div class="vocab-ex">"Don't memoize every function — that's premature optimization. Profile first, optimize only what's actually slow."</div>
+            </div>
+          </div>
+        </div>
+        <div class="vocab-item">
+          <div class="vocab-accent"></div>
+          <div class="vocab-body">
+            <div class="vocab-term">
+              <div class="vocab-en">Multi-agent Workflow</div>
+              <div class="vocab-pr">/ˌmʌltiˈeɪdʒənt/ noun</div>
+            </div>
+            <div class="vocab-right">
+              <div class="vocab-vn">🇻🇳 <strong>Dùng nhiều AI tools cho different layers</strong> — Cursor cho daily coding, Claude Code cho complex tasks, Gemini cho large docs. Route đúng task đến đúng agent = skill quan trọng nhất 2026.</div>
+              <div class="vocab-ex">"My multi-agent workflow: Cursor for editing, Claude Code for architecture, Gemini for reading specs."</div>
+            </div>
+          </div>
+        </div>
+        <div class="vocab-item">
+          <div class="vocab-accent"></div>
+          <div class="vocab-body">
+            <div class="vocab-term">
+              <div class="vocab-en">Forcing Function</div>
+              <div class="vocab-pr">/ˈfɔːsɪŋ ˈfʌŋkʃən/ noun</div>
+            </div>
+            <div class="vocab-right">
+              <div class="vocab-vn">🇻🇳 <strong>Cơ chế buộc bạn phải làm đúng</strong> — ví dụ: viết plan trước khi code là forcing function để không code blindly. Senior devs dùng intentional forcing functions trong workflow của họ.</div>
+              <div class="vocab-ex">"Writing the PR description before merging is a forcing function — it makes you articulate what and why."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEXT RESEARCH -->
+    <section class="section">
+      <div class="eyebrow">08 — Research next</div>
+      <h2>Tiếp theo nên tìm hiểu</h2>
+      <div class="next-grid">
+        <div class="next-card" onclick="sendPrompt && sendPrompt('Build AI-Powered Next.js Feature — từ zero đến production. Tích hợp Claude API vào web app thật.')">
+          <div class="next-num">Topic 01</div>
+          <div class="next-title">Build AI-Powered Next.js Feature</div>
+          <div class="next-desc">Tích hợp Claude API vào web app thật — chatbot, smart search, AI form. Từ zero đến production.</div>
+          <span class="next-arrow">→ Research this</span>
+        </div>
+        <div class="next-card" onclick="sendPrompt && sendPrompt('System Design cho Junior Dev — bắt đầu từ đâu? Database schema, API design, caching strategy.')">
+          <div class="next-num">Topic 02</div>
+          <div class="next-title">System Design cho Junior Dev</div>
+          <div class="next-desc">Database schema, API design, caching strategy — decisions cơ bản junior hay bỏ qua.</div>
+          <span class="next-arrow">→ Research this</span>
+        </div>
+        <div class="next-card" onclick="sendPrompt && sendPrompt('Next.js App Router Performance — Core Web Vitals, RSC, streaming, image optimization.')">
+          <div class="next-num">Topic 03</div>
+          <div class="next-title">Next.js Performance — Core Web Vitals</div>
+          <div class="next-desc">RSC, streaming, image optimization, bundle size — đạt LCP &lt; 2.5s trong môi trường thật.</div>
+          <span class="next-arrow">→ Research this</span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>Tech Market Research Agent · Workflow Guide #05 · March 2026</span>
+      <span>NxCode · DEV Community · Builder.io · Emergent.sh · Particula.tech</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  const fill = document.getElementById('progress-fill');
+  window.addEventListener('scroll', () => {
+    const d = document.documentElement;
+    const pct = (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100;
+    if (fill) fill.style.width = Math.min(pct, 100) + '%';
+  });
+
+  const sections = document.querySelectorAll('.section[id], .verdict[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(item => {
+          item.classList.toggle('active', item.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

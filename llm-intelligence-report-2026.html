@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Intelligence Report — March 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f9f8f5;
+    --surface: #fff;
+    --s2: #f3f2ee;
+    --border: #e5e3dc;
+    --border2: #ccc9bf;
+    --text: #18181a;
+    --muted: #78756f;
+    --hint: #b0ada6;
+    --accent: #1e3a8a;
+    --accent-l: #dbeafe;
+    --green: #166534;
+    --green-l: #dcfce7;
+    --amber: #92400e;
+    --amber-l: #fef3c7;
+    --red: #991b1b;
+    --red-l: #fee2e2;
+    --purple: #4c1d95;
+    --purple-l: #ede9fe;
+    --teal: #134e4a;
+    --teal-l: #ccfbf1;
+    --nav-w: 200px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    line-height: 1.65;
+  }
+
+  .shell {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    gap: 48px;
+    align-items: flex-start;
+  }
+
+  .sidenav {
+    width: var(--nav-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 32px;
+    padding: 24px 0;
+  }
+
+  .nav-brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--hint);
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-list { list-style: none; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border2);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .nav-item.active .nav-dot,
+  .nav-item:hover .nav-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.2);
+  }
+
+  .nav-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+    line-height: 1.3;
+  }
+
+  .nav-item.active .nav-label,
+  .nav-item:hover .nav-label { color: var(--accent); }
+
+  .nav-progress {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-progress-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar-bg {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #3b82f6);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  @media (max-width: 1024px) {
+    .sidenav { display: none; }
+    .shell { padding: 0 16px; }
+  }
+
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 0 0 80px;
+  }
+
+  header {
+    padding: 52px 0 36px;
+    border-bottom: 2px solid var(--text);
+    margin-bottom: 48px;
+  }
+
+  .eyebrow-top {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--hint);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .eyebrow-top::before {
+    content: '';
+    width: 20px;
+    height: 1.5px;
+    background: var(--hint);
+  }
+
+  h1 {
+    font-size: clamp(34px, 5vw, 58px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.0;
+    margin-bottom: 16px;
+  }
+
+  h1 .hl { 
+    background: linear-gradient(135deg, var(--accent), #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header-sub {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .header-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .htag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    border: 1px solid var(--border2);
+    padding: 4px 12px;
+    color: var(--muted);
+    transition: all 0.2s ease;
+  }
+
+  .htag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hook {
+    background: var(--text);
+    color: #e0ddd7;
+    padding: 22px 28px;
+    margin-bottom: 56px;
+    font-size: 14px;
+    line-height: 1.85;
+    border-left: 4px solid #fcd34d;
+    animation: slideIn 0.6s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .hook strong { color: #fcd34d; }
+  .hook em { color: #a5b4fc; font-style: normal; }
+
+  .section { margin-bottom: 64px; scroll-margin-top: 32px; }
+
+  .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--hint);
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .section-lead {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.7;
+    max-width: 560px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* INTERACTIVE PICKER */
+  .picker-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .picker-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .picker-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .picker-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 8px 16px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .picker-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .picker-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .picker-result {
+    background: var(--accent-l);
+    border: 1px solid #93c5fd;
+    padding: 16px 20px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .picker-result.show { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .picker-result-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .picker-result-model {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .picker-result-reason {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .filter-select {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 8px 12px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    cursor: pointer;
+    min-width: 140px;
+  }
+
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  /* MODEL CARDS */
+  .model-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .model-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 20px rgba(30, 58, 138, 0.1);
+  }
+
+  .model-card.hidden { display: none; }
+
+  .model-header {
+    display: flex;
+    gap: 0;
+  }
+
+  .model-rank {
+    width: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+
+  .rank-1 { background: linear-gradient(135deg, #fef3c7, #fcd34d); color: #92400e; }
+  .rank-2 { background: linear-gradient(135deg, #f3f4f6, #d1d5db); color: #374151; }
+  .rank-3 { background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #92400e; opacity: 0.8; }
+  .rank-4 { background: linear-gradient(135deg, var(--accent-l), #bfdbfe); color: var(--accent); }
+  .rank-5 { background: linear-gradient(135deg, var(--purple-l), #ddd6fe); color: var(--purple); }
+
+  .model-info {
+    flex: 1;
+    padding: 20px 24px;
+  }
+
+  .model-top {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .model-name {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .model-company {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .model-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: auto;
+    transition: all 0.2s ease;
+  }
+
+  .tag-frontier { background: var(--accent-l); color: var(--accent); }
+  .tag-reasoning { background: var(--green-l); color: var(--green); }
+  .tag-open { background: var(--purple-l); color: var(--purple); }
+  .tag-value { background: var(--amber-l); color: var(--amber); }
+
+  .model-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .model-specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .spec-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .spec-value {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .spec-value.green { color: var(--green); }
+  .spec-value.amber { color: var(--amber); }
+  .spec-value.accent { color: var(--accent); }
+
+  /* EXPANDABLE DETAILS */
+  .model-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    background: var(--s2);
+  }
+
+  .model-card.expanded .model-details {
+    max-height: 600px;
+    padding: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .details-section h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .benchmark-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .benchmark-row:last-child { border-bottom: none; }
+
+  .benchmark-name {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .benchmark-bar-container {
+    flex: 1;
+    margin: 0 12px;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .benchmark-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+    width: 0;
+  }
+
+  .benchmark-bar.animate { width: var(--width); }
+
+  .bb-blue { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+  .bb-green { background: linear-gradient(90deg, #22c55e, #4ade80); }
+  .bb-amber { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+  .bb-purple { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+
+  .benchmark-score {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .pros-cons { grid-template-columns: 1fr; }
+  }
+
+  .pros-list, .cons-list {
+    list-style: none;
+  }
+
+  .pros-list li, .cons-list li {
+    font-size: 12px;
+    padding: 6px 0;
+    padding-left: 16px;
+    position: relative;
+    color: var(--muted);
+  }
+
+  .pros-list li::before {
+    content: '+';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .cons-list li::before {
+    content: '−';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .expand-hint {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--hint);
+    text-align: center;
+    padding: 8px;
+    border-top: 1px solid var(--border);
+    transition: all 0.2s ease;
+  }
+
+  .model-card.expanded .expand-hint {
+    color: var(--accent);
+  }
+
+  /* COMPARISON TABLE */
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 32px;
+    font-size: 12px;
+  }
+
+  .comparison-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--hint);
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--text);
+    background: var(--s2);
+  }
+
+  .comparison-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .comparison-table tr:hover td {
+    background: var(--s2);
+  }
+
+  .comparison-table .model-cell {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .company-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .cb-openai { background: var(--accent-l); color: var(--accent); }
+  .cb-anthropic { background: var(--amber-l); color: var(--amber); }
+  .cb-google { background: var(--green-l); color: var(--green); }
+  .cb-deepseek { background: var(--purple-l); color: var(--purple); }
+  .cb-xai { background: var(--teal-l); color: var(--teal); }
+
+  /* VERDICT */
+  .verdict {
+    background: var(--text);
+    color: #e0ddd7;
+    padding: 32px 36px;
+    margin-bottom: 56px;
+  }
+
+  .verdict-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fcd34d;
+    margin-bottom: 10px;
+  }
+
+  .verdict h3 { font-size: 20px; font-weight: 700; margin-bottom: 14px; color: #f9f8f5; }
+  .verdict p { font-size: 13px; color: #a09d97; line-height: 1.8; margin-bottom: 20px; }
+
+  .recommend-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+
+  .recommend-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    align-items: flex-start;
+    transition: background 0.2s ease;
+  }
+
+  .recommend-item:hover { background: rgba(255,255,255,0.03); }
+
+  .recommend-item:last-child { border-bottom: none; }
+
+  .rec-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #fcd34d;
+    flex-shrink: 0;
+    min-width: 80px;
+    margin-top: 2px;
+  }
+
+  .rec-text { font-size: 13px; color: #c8c4be; line-height: 1.65; }
+  .rec-text strong { color: #f9f8f5; }
+
+  /* USE CASE GRID */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .tech-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .tech-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .tech-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--hint);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .tech-name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .tech-body {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .tech-prompt {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 8px 10px;
+    line-height: 1.65;
+    font-style: italic;
+    border-left: 2px solid;
+  }
+
+  .tc-1 { border-top: 2px solid #3b82f6; }
+  .tc-1 .tech-prompt { color: #1e3a8a; background: var(--accent-l); border-color: #3b82f6; }
+
+  .tc-2 { border-top: 2px solid #22c55e; }
+  .tc-2 .tech-prompt { color: var(--green); background: var(--green-l); border-color: #22c55e; }
+
+  .tc-3 { border-top: 2px solid #f59e0b; }
+  .tc-3 .tech-prompt { color: var(--amber); background: var(--amber-l); border-color: #f59e0b; }
+
+  .tc-4 { border-top: 2px solid #8b5cf6; }
+  .tc-4 .tech-prompt { color: var(--purple); background: var(--purple-l); border-color: #8b5cf6; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border2);
+    padding: 24px 0 0;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--hint);
+  }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* PRINT STYLES */
+  @media print {
+    .sidenav, .picker-section, .filter-bar, .expand-hint { display: none; }
+    .model-card { break-inside: avoid; }
+    .model-details { max-height: none !important; }
+    .shell { max-width: 100%; padding: 0; }
+    body { background: white; }
+  }
+
+  /* ANIMATIONS */
+  .fade-in {
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <nav class="sidenav">
+    <div class="nav-brand">Intelligence Report</div>
+    <ul class="nav-list">
+      <li><a class="nav-item active" href="#overview">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Overview</span>
+      </a></li>
+      <li><a class="nav-item" href="#picker">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Model Picker</span>
+      </a></li>
+      <li><a class="nav-item" href="#rankings">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Rankings</span>
+      </a></li>
+      <li><a class="nav-item" href="#comparison">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Comparison</span>
+      </a></li>
+      <li><a class="nav-item" href="#use-cases">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Use Cases</span>
+      </a></li>
+      <li><a class="nav-item" href="#verdict">
+        <div class="nav-dot"></div>
+        <span class="nav-label">Verdict</span>
+      </a></li>
+    </ul>
+    <div class="nav-progress">
+      <div class="nav-progress-label">Reading progress</div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <header id="overview">
+      <div class="eyebrow-top">Intelligence Report · March 2026</div>
+      <h1>Top LLM<br><span class="hl">Intelligence Report</span></h1>
+      <p class="header-sub">Comprehensive analysis of the world's most powerful language models. Benchmarks, pricing, and strategic recommendations for developers.</p>
+      <div class="header-tags">
+        <span class="htag">Frontier Models</span>
+        <span class="htag">Reasoning</span>
+        <span class="htag">Open Source</span>
+        <span class="htag">Mar 2026</span>
+      </div>
+    </header>
+
+    <div class="hook">
+      🧠 <strong>Core insight:</strong> The "one model to rule them all" era is over. In 2026, <em>model routing</em> is the new competitive advantage — using DeepSeek R1 for logic ($0.55/M), GPT-5.4 for coding, and Claude Opus 4.6 for complex reasoning. Teams save 60%+ by routing tasks intelligently.
+    </div>
+
+    <!-- INTERACTIVE MODEL PICKER -->
+    <section class="section" id="picker">
+      <div class="eyebrow">00 — Smart Picker</div>
+      <h2>Find Your Perfect Model</h2>
+      <p class="section-lead">Select your task type and get instant model recommendations with reasoning.</p>
+
+      <div class="picker-section">
+        <div class="picker-header">
+          <div class="picker-title">What do you need?</div>
+          <div class="picker-options">
+            <button class="picker-btn" data-task="coding">💻 Coding</button>
+            <button class="picker-btn" data-task="reasoning">🧠 Reasoning</button>
+            <button class="picker-btn" data-task="fast">⚡ Fast Q&A</button>
+            <button class="picker-btn" data-task="budget">💰 Budget</button>
+            <button class="picker-btn" data-task="research">🔍 Research</button>
+          </div>
+        </div>
+        <div class="picker-result" id="picker-result">
+          <div class="picker-result-title">Recommended Model</div>
+          <div class="picker-result-model" id="result-model"></div>
+          <div class="picker-result-reason" id="result-reason"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <span class="filter-label">Sort by:</span>
+      <select class="filter-select" id="sort-select">
+        <option value="rank">Intelligence Rank</option>
+        <option value="price-low">Price: Low → High</option>
+        <option value="price-high">Price: High → Low</option>
+        <option value="context">Context Length</option>
+      </select>
+      <span class="filter-label">Filter:</span>
+      <select class="filter-select" id="filter-select">
+        <option value="all">All Models</option>
+        <option value="frontier">Frontier Only</option>
+        <option value="open">Open Source</option>
+        <option value="reasoning">Reasoning</option>
+      </select>
+    </div>
+
+    <!-- MODEL RANKINGS -->
+    <section class="section" id="rankings">
+      <div class="eyebrow">01 — Model Rankings</div>
+      <h2>Top 5 Frontier LLMs — March 2026</h2>
+      <p class="section-lead">Ranked by composite intelligence score from independent benchmarks (Epoch AI, Scale AI, LM Arena). Click to expand for detailed benchmarks.</p>
+
+      <!-- GPT-5.4 -->
+      <div class="model-card" data-rank="1" data-price="10" data-context="1000000" data-type="frontier">
+        <div class="model-header">
+          <div class="model-rank rank-1">#1</div>
+          <div class="model-info">
+            <div class="model-top">
+              <div class="model-name">GPT-5.4</div>
+              <div class="model-company">OpenAI</div>
+              <span class="model-tag tag-frontier">Frontier</span>
+            </div>
+            <p class="model-desc">OpenAI's flagship unified model — combines Codex coding, o1/o3 reasoning, and computer use into single architecture. Released March 2026. First model with 75% computer use capability.</p>
+            <div class="model-specs">
+              <div class="spec-item">
+                <span class="spec-label">Context</span>
+                <span class="spec-value">1M tokens</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Input</span>
+                <span class="spec-value green">$10/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Output</span>
+                <span class="spec-value green">$30/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Computer Use</span>
+                <span class="spec-value accent">75%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="model-details">
+          <div class="details-grid">
+            <div class="details-section">
+              <h4>Benchmarks</h4>
+              <div class="benchmark-row">
+                <span class="benchmark-name">SWE-bench Verified</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-blue" style="--width: 74.9%"></div></div>
+                <span class="benchmark-score">74.9%</span>
+              </div>
+              <div class="benchmark-row">
+                <span class="benchmark-name">GPQA Diamond</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-green" style="--width: 78%"></div></div>
+                <span class="benchmark-score">78%</span>
+              </div>
+              <div class="benchmark-row">
+                <span class="benchmark-name">AIME 2025</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-amber" style="--width: 94.6%"></div></div>
+                <span class="benchmark-score">94.6%</span>
+              </div>
+              <div class="benchmark-row">
+                <span class="benchmark-name">Humanity's Last Exam</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-purple" style="--width: 41.6%"></div></div>
+                <span class="benchmark-score">41.6%</span>
+              </div>
+            </div>
+            <div class="details-section">
+              <h4>Pros & Cons</h4>
+              <div class="pros-cons">
+                <ul class="pros-list">
+                  <li>Unified architecture (coding + reasoning + computer use)</li>
+                  <li>Best computer use capability (75%)</li>
+                  <li>1M token context</li>
+                  <li>Multimodal native</li>
+                </ul>
+                <ul class="cons-list">
+                  <li>Higher output cost ($30/M)</li>
+                  <li>Not fully open source</li>
+                  <li>Can be overkill for simple tasks</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="expand-hint">Click to expand benchmarks ▼</div>
+      </div>
+
+      <!-- Claude Opus 4.6 -->
+      <div class="model-card" data-rank="2" data-price="15" data-context="200000" data-type="frontier">
+        <div class="model-header">
+          <div class="model-rank rank-2">#2</div>
+          <div class="model-info">
+            <div class="model-top">
+              <div class="model-name">Claude Opus 4.6</div>
+              <div class="model-company">Anthropic</div>
+              <span class="model-tag tag-frontier">Frontier</span>
+            </div>
+            <p class="model-desc">Anthropic's most capable model (Feb 2026). Excels at complex reasoning, nuanced understanding, and following detailed instructions. Constitutional AI approach for safety.</p>
+            <div class="model-specs">
+              <div class="spec-item">
+                <span class="spec-label">Context</span>
+                <span class="spec-value">200K tokens</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Input</span>
+                <span class="spec-value amber">$15/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Output</span>
+                <span class="spec-value amber">$75/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Strength</span>
+                <span class="spec-value accent">Reasoning</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="model-details">
+          <div class="details-grid">
+            <div class="details-section">
+              <h4>Benchmarks</h4>
+              <div class="benchmark-row">
+                <span class="benchmark-name">SWE-bench Verified</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-blue" style="--width: 80.8%"></div></div>
+                <span class="benchmark-score">80.8%</span>
+              </div>
+              <div class="benchmark-row">
+                <span class="benchmark-name">GPQA Diamond</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-green" style="--width: 91.3%"></div></div>
+                <span class="benchmark-score">91.3%</span>
+              </div>
+              <div class="benchmark-row">
+                <span class="benchmark-name">Humanity's Last Exam</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-purple" style="--width: 38%"></div></div>
+                <span class="benchmark-score">38%</span>
+              </div>
+            </div>
+            <div class="details-section">
+              <h4>Pros & Cons</h4>
+              <div class="pros-cons">
+                <ul class="pros-list">
+                  <li>Best-in-class reasoning (91.3% GPQA)</li>
+                  <li>Constitutional AI safety approach</li>
+                  <li>Excellent at following complex instructions</li>
+                  <li>Fast mode available for reduced latency</li>
+                </ul>
+                <ul class="cons-list">
+                  <li>Highest output cost ($75/M)</li>
+                  <li>Smaller context (200K vs 1M)</li>
+                  <li>No computer use capability</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="expand-hint">Click to expand benchmarks ▼</div>
+      </div>
+
+      <!-- Gemini 3.1 Pro -->
+      <div class="model-card" data-rank="3" data-price="1.25" data-context="1000000" data-type="frontier">
+        <div class="model-header">
+          <div class="model-rank rank-3">#3</div>
+          <div class="model-info">
+            <div class="model-top">
+              <div class="model-name">Gemini 3.1 Pro</div>
+              <div class="model-company">Google</div>
+              <span class="model-tag tag-frontier">Frontier</span>
+            </div>
+            <p class="model-desc">Google's flagship reasoning model. Highest intelligence score on multiple benchmarks. Remarkable speed and multimodal features.</p>
+            <div class="model-specs">
+              <div class="spec-item">
+                <span class="spec-label">Context</span>
+                <span class="spec-value">1M tokens</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Input</span>
+                <span class="spec-value green">$1.25/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Output</span>
+                <span class="spec-value green">$10/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Speed</span>
+                <span class="spec-value accent">Fastest</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="model-details">
+          <div class="details-grid">
+            <div class="details-section">
+              <h4>Benchmarks</h4>
+              <div class="benchmark-row">
+                <span class="benchmark-name">Humanity's Last Exam</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-purple" style="--width: 44.7%"></div></div>
+                <span class="benchmark-score">44.7%</span>
+              </div>
+              <div class="benchmark-row">
+                <span class="benchmark-name">GPQA Diamond</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-green" style="--width: 82%"></div></div>
+                <span class="benchmark-score">82%</span>
+              </div>
+              <div class="benchmark-row">
+                <span class="benchmark-name">MATH Level 5</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-amber" style="--width: 88%"></div></div>
+                <span class="benchmark-score">88%</span>
+              </div>
+            </div>
+            <div class="details-section">
+              <h4>Pros & Cons</h4>
+              <div class="pros-cons">
+                <ul class="pros-list">
+                  <li>Best price-performance ratio</li>
+                  <li>1M token context</li>
+                  <li>Fastest inference speed</li>
+                  <li>Excellent multimodal capabilities</li>
+                </ul>
+                <ul class="cons-list">
+                  <li>Weaker coding vs GPT-5.4</li>
+                  <li>No computer use</li>
+                  <li>Less mature ecosystem</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="expand-hint">Click to expand benchmarks ▼</div>
+      </div>
+
+      <!-- DeepSeek R1 -->
+      <div class="model-card" data-rank="4" data-price="0.55" data-context="128000" data-type="open">
+        <div class="model-header">
+          <div class="model-rank rank-4">#4</div>
+          <div class="model-info">
+            <div class="model-top">
+              <div class="model-name">DeepSeek R1</div>
+              <div class="model-company">DeepSeek</div>
+              <span class="model-tag tag-open">Open Source</span>
+            </div>
+            <p class="model-desc">Open-source reasoning model matching OpenAI o1 performance. Trained for ~$6M (vs $100M+). Fully open reasoning tokens.</p>
+            <div class="model-specs">
+              <div class="spec-item">
+                <span class="spec-label">Context</span>
+                <span class="spec-value">128K tokens</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Input</span>
+                <span class="spec-value green">$0.55/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Output</span>
+                <span class="spec-value green">$2.18/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Cost Saving</span>
+                <span class="spec-value green">95%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="model-details">
+          <div class="details-grid">
+            <div class="details-section">
+              <h4>Benchmarks</h4>
+              <div class="benchmark-row">
+                <span class="benchmark-name">AIME 2024</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-amber" style="--width: 79.8%"></div></div>
+                <span class="benchmark-score">79.8%</span>
+              </div>
+              <div class="benchmark-row">
+                <span class="benchmark-name">MATH</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-green" style="--width: 86%"></div></div>
+                <span class="benchmark-score">86%</span>
+              </div>
+            </div>
+            <div class="details-section">
+              <h4>Pros & Cons</h4>
+              <div class="pros-cons">
+                <ul class="pros-list">
+                  <li>95% cheaper than GPT-4</li>
+                  <li>Fully open source + open weights</li>
+                  <li>Open reasoning tokens for transparency</li>
+                  <li>Self-hosting possible</li>
+                </ul>
+                <ul class="cons-list">
+                  <li>Smaller context (128K)</li>
+                  <li>Less mature tooling</li>
+                  <li>Weaker multimodal</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="expand-hint">Click to expand benchmarks ▼</div>
+      </div>
+
+      <!-- Grok 4.1 -->
+      <div class="model-card" data-rank="5" data-price="3" data-context="131072" data-type="reasoning">
+        <div class="model-header">
+          <div class="model-rank rank-5">#5</div>
+          <div class="model-info">
+            <div class="model-top">
+              <div class="model-name">Grok 4.1 Thinking</div>
+              <div class="model-company">xAI</div>
+              <span class="model-tag tag-reasoning">Reasoning</span>
+            </div>
+            <p class="model-desc">xAI's reasoning model (codename: quasarflux). #1 in LM Arena Text Arena with 1483 Elo. Voice, image, video generation. Real-time search.</p>
+            <div class="model-specs">
+              <div class="spec-item">
+                <span class="spec-label">LM Arena</span>
+                <span class="spec-value accent">#1 (1483)</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Input</span>
+                <span class="spec-value amber">$3/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Output</span>
+                <span class="spec-value amber">$15/M</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Multimodal</span>
+                <span class="spec-value accent">Full</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="model-details">
+          <div class="details-grid">
+            <div class="details-section">
+              <h4>Benchmarks</h4>
+              <div class="benchmark-row">
+                <span class="benchmark-name">LM Arena (Elo)</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-purple" style="--width: 100%"></div></div>
+                <span class="benchmark-score">1483</span>
+              </div>
+              <div class="benchmark-row">
+                <span class="benchmark-name">Coding</span>
+                <div class="benchmark-bar-container"><div class="benchmark-bar bb-blue" style="--width: 72%"></div></div>
+                <span class="benchmark-score">72%</span>
+              </div>
+            </div>
+            <div class="details-section">
+              <h4>Pros & Cons</h4>
+              <div class="pros-cons">
+                <ul class="pros-list">
+                  <li>#1 in LM Arena overall</li>
+                  <li>Real-time search integration</li>
+                  <li>Voice, image, video generation</li>
+                  <li>Unique personality & humor</li>
+                </ul>
+                <ul class="cons-list">
+                  <li>Smaller context window</li>
+                  <li>Less enterprise adoption</li>
+                  <li>Newer in market</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="expand-hint">Click to expand benchmarks ▼</div>
+      </div>
+
+    </section>
+
+    <!-- COMPARISON TABLE -->
+    <section class="section" id="comparison">
+      <div class="eyebrow">02 — Comparison Table</div>
+      <h2>Side-by-Side Analysis</h2>
+      <p class="section-lead">Quick reference for all key metrics across top models.</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Context</th>
+            <th>Input Price</th>
+            <th>Output Price</th>
+            <th>Key Strength</th>
+            <th>Best For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="model-cell">
+                <span class="company-badge cb-openai">OpenAI</span>
+                GPT-5.4
+              </div>
+            </td>
+            <td>1M</td>
+            <td>$10/M</td>
+            <td>$30/M</td>
+            <td>Computer Use</td>
+            <td>Production coding</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="model-cell">
+                <span class="company-badge cb-anthropic">Anthropic</span>
+                Claude Opus 4.6
+              </div>
+            </td>
+            <td>200K</td>
+            <td>$15/M</td>
+            <td>$75/M</td>
+            <td>Reasoning</td>
+            <td>Complex analysis</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="model-cell">
+                <span class="company-badge cb-google">Google</span>
+                Gemini 3.1 Pro
+              </div>
+            </td>
+            <td>1M</td>
+            <td>$1.25/M</td>
+            <td>$10/M</td>
+            <td>Speed</td>
+            <td>Fast prototyping</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="model-cell">
+                <span class="company-badge cb-deepseek">DeepSeek</span>
+                DeepSeek R1
+              </div>
+            </td>
+            <td>128K</td>
+            <td>$0.55/M</td>
+            <td>$2.18/M</td>
+            <td>Value</td>
+            <td>High volume</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="model-cell">
+                <span class="company-badge cb-xai">xAI</span>
+                Grok 4.1
+              </div>
+            </td>
+            <td>131K</td>
+            <td>$3/M</td>
+            <td>$15/M</td>
+            <td>Creativity</td>
+            <td>Research</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- USE CASES -->
+    <section class="section" id="use-cases">
+      <div class="eyebrow">03 — Use Case Matrix</div>
+      <h2>When to Use Which Model</h2>
+      <p class="section-lead">Strategic routing guide for developers. Match your task to the right model for optimal cost-quality balance.</p>
+
+      <div class="tech-grid">
+        <div class="tech-card tc-1">
+          <div class="tech-num">01 — Coding</div>
+          <div class="tech-name">Complex Development</div>
+          <div class="tech-body">Multi-file refactoring, new module architecture, 10+ files changes. Claude Code or GPT-5.4 for best results.</div>
+          <div class="tech-prompt">"Refactor auth to use JWT, maintain existing API contracts."</div>
+        </div>
+
+        <div class="tech-card tc-2">
+          <div class="tech-num">02 — Reasoning</div>
+          <div class="tech-name">Complex Logic</div>
+          <div class="tech-body">Mathematical problems, multi-step reasoning, root cause analysis. DeepSeek R1 for cost efficiency, Claude Opus 4.6 for quality.</div>
+          <div class="tech-prompt">"Walk me through root cause analysis. What are 3 possible causes?"</div>
+        </div>
+
+        <div class="tech-card tc-3">
+          <div class="tech-num">03 — Fast Q&A</div>
+          <div class="tech-name">Rapid Prototyping</div>
+          <div class="tech-body">Quick questions, code snippets, explanation. Gemini 2.5 Pro for speed, Grok 4.1 for real-time search integration.</div>
+          <div class="tech-prompt">"Explain this React pattern in 2 sentences."</div>
+        </div>
+
+        <div class="tech-card tc-4">
+          <div class="tech-num">04 — Budget</div>
+          <div class="tech-name">High Volume Tasks</div>
+          <div class="tech-body">Batch processing, simple transformations, classification. DeepSeek R1 at $0.55/M = 95% cheaper than GPT-4.</div>
+          <div class="tech-prompt">"Classify these 100 support tickets by category."</div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- VERDICT -->
+    <section class="section" id="verdict">
+      <div class="verdict">
+        <div class="verdict-eyebrow">Strategic Verdict</div>
+        <h3>Model Routing is the New Skill</h3>
+        <p>The era of "which model is best" is over. The competitive advantage in 2026 is knowing <strong>which model to use for which task</strong>.</p>
+        
+        <ul class="recommend-list">
+          <li class="recommend-item">
+            <span class="rec-label">Production</span>
+            <span class="rec-text">Use <strong>GPT-5.4</strong> for coding + computer use. 75% automation capability changes dev workflow.</span>
+          </li>
+          <li class="recommend-item">
+            <span class="rec-label">Reasoning</span>
+            <span class="rec-text">Use <strong>Claude Opus 4.6</strong> for complex reasoning, nuanced understanding, safety-critical tasks.</span>
+          </li>
+          <li class="recommend-item">
+            <span class="rec-label">Speed</span>
+            <span class="rec-text">Use <strong>Gemini 3.1 Pro</strong> for fast multimodal tasks. Best price-performance ratio at $1.25/M input.</span>
+          </li>
+          <li class="recommend-item">
+            <span class="rec-label">Budget</span>
+            <span class="rec-text">Use <strong>DeepSeek R1</strong> for logic tasks. $0.55/M input = 95% savings for high-volume workloads.</span>
+          </li>
+          <li class="recommend-item">
+            <span class="rec-label">Research</span>
+            <span class="rec-text">Use <strong>Grok 4.1</strong> for real-time search + creative tasks. #1 in LM Arena for a reason.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      <span>Intelligence Report · March 2026</span>
+      <span>Data: Epoch AI · Scale AI · LM Arena · OpenAI · Anthropic · Google</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // Progress bar
+  const fill = document.getElementById('progress-fill');
+  window.addEventListener('scroll', () => {
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollTop = window.scrollY;
+    fill.style.width = Math.min(100, (scrollTop / docHeight) * 100) + '%';
+  });
+
+  // Active nav tracking
+  const sections = document.querySelectorAll('section, header');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (scrollY >= sectionTop - 100) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navItems.forEach(item => {
+      item.classList.remove('active');
+      if (item.getAttribute('href') === '#' + current) {
+        item.classList.add('active');
+      }
+    });
+  });
+
+  // Interactive Model Picker
+  const pickerBtns = document.querySelectorAll('.picker-btn');
+  const pickerResult = document.getElementById('picker-result');
+  const resultModel = document.getElementById('result-model');
+  const resultReason = document.getElementById('result-reason');
+
+  const recommendations = {
+    coding: {
+      model: 'GPT-5.4',
+      reason: 'Best for production coding with 75% computer use capability. Multi-file refactoring and new module architecture.'
+    },
+    reasoning: {
+      model: 'Claude Opus 4.6',
+      reason: 'Highest reasoning scores (91.3% GPQA). Excellent for complex analysis and nuanced understanding.'
+    },
+    fast: {
+      model: 'Gemini 3.1 Pro',
+      reason: 'Fastest inference speed with best price-performance. Perfect for rapid prototyping and quick Q&A.'
+    },
+    budget: {
+      model: 'DeepSeek R1',
+      reason: '95% cheaper than GPT-4 at $0.55/M. Open source with fully open weights for self-hosting.'
+    },
+    research: {
+      model: 'Grok 4.1 Thinking',
+      reason: '#1 in LM Arena (1483 Elo) with real-time search. Best for research and creative tasks.'
+    }
+  };
+
+  pickerBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      pickerBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      const task = btn.dataset.task;
+      const rec = recommendations[task];
+      
+      resultModel.textContent = rec.model;
+      resultReason.textContent = rec.reason;
+      pickerResult.classList.add('show');
+    });
+  });
+
+  // Expandable model cards
+  const modelCards = document.querySelectorAll('.model-card');
+  modelCards.forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('expanded');
+      
+      // Animate benchmark bars when expanded
+      if (card.classList.contains('expanded')) {
+        setTimeout(() => {
+          card.querySelectorAll('.benchmark-bar').forEach(bar => {
+            bar.classList.add('animate');
+          });
+        }, 100);
+      }
+    });
+  });
+
+  // Filter functionality
+  const sortSelect = document.getElementById('sort-select');
+  const filterSelect = document.getElementById('filter-select');
+
+  function applyFilters() {
+    const sortBy = sortSelect.value;
+    const filterBy = filterSelect.value;
+    const cards = Array.from(modelCards);
+
+    // Filter first
+    cards.forEach(card => {
+      const type = card.dataset.type;
+      if (filterBy === 'all') {
+        card.classList.remove('hidden');
+      } else if (filterBy === type) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // Then sort
+    const visibleCards = cards.filter(c => !c.classList.contains('hidden'));
+    
+    visibleCards.sort((a, b) => {
+      if (sortBy === 'rank') return parseInt(a.dataset.rank) - parseInt(b.dataset.rank);
+      if (sortBy === 'price-low') return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+      if (sortBy === 'price-high') return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+      if (sortBy === 'context') return parseInt(b.dataset.context) - parseInt(a.dataset.context);
+      return 0;
+    });
+
+    // Re-append in order
+    const container = document.getElementById('rankings');
+    visibleCards.forEach(card => container.appendChild(card));
+  }
+
+  sortSelect.addEventListener('change', applyFilters);
+  filterSelect.addEventListener('change', applyFilters);
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = item.getAttribute('href').substring(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
