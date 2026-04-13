@@ -182,12 +182,11 @@ export default function StarPage() {
         >
           {STAR_EXAMPLES.map((ex) => {
             const cat = CATEGORY_COLORS[ex.category] ?? { color: "#545b64", bg: "#f2f3f5", border: "#d5dbdb" };
-            const rows = [
-              { letter: "S", value: ex.situation, ...STAR_LABELS[0] },
-              { letter: "T", value: ex.task,      ...STAR_LABELS[1] },
-              { letter: "A", value: ex.action,    ...STAR_LABELS[2] },
-              { letter: "R", value: ex.result,    ...STAR_LABELS[3] },
-            ];
+            const values = [ex.situation, ex.task, ex.action, ex.result];
+            const rows = STAR_LABELS.map((starLabel, index) => ({
+              ...starLabel,
+              value: values[index],
+            }));
             return (
               <div key={ex.id} className="star-example-card">
                 {/* Card header */}
