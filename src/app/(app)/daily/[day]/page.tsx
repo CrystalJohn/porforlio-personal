@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { DAILY_UPGRADES } from "@/lib/daily-data";
 import { getDayDetail, type Step, type ChecklistItem } from "@/lib/daily-detail-data";
 import { setDayCompleted, isDayCompleted } from "@/lib/completion-store";
@@ -35,6 +36,48 @@ export default function DayDetailPage() {
   const [expandedStep, setExpandedStep] = useState<number | null>(1);
   const [noteSaved, setNoteSaved] = useState(false);
   const [isDone, setIsDone] = useState(false);
+
+  // ── D2 interactive flex demo ───────────────────────────────────
+  const [flexDir, setFlexDir] = useState<"row" | "column">("row");
+  const [flexJC,  setFlexJC]  = useState("flex-start");
+  const [flexAI,  setFlexAI]  = useState("flex-start");
+
+  // ── Scrollspy ──────────────────────────────────────────────────
+  const [activeSection, setActiveSection] = useState("section-hero");
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  const navSections = [
+    { id: "section-hero",        label: "Overview"    },
+    { id: "section-steps",       label: "Steps"       },
+    ...(dayNum === 2 ? [
+      { id: "section-concept",     label: "Concept"     },
+      { id: "section-interactive", label: "Interactive" },
+    ] : []),
+  ];
+
+  useEffect(() => {
+    const ids = navSections.map((s) => s.id);
+    const handleScroll = () => {
+      let active = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= 160) active = id;
+      }
+      setActiveSection(active);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [dayNum]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function scrollToSection(id: string) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 120;
+    window.scrollTo({ top, behavior: "smooth" });
+  }
 
   // ── load from localStorage ─────────────────────────────────────
   useEffect(() => {
@@ -110,7 +153,8 @@ export default function DayDetailPage() {
   }, [doneCount, totalCount, dayNum]);
 
   return (
-    <div style={pageStyle}>
+    <>
+      <div style={pageStyle}>
       <style>{`
         /* ── Back button ── */
         .back-btn {
@@ -208,10 +252,11 @@ export default function DayDetailPage() {
         </button>
 
         {/* ── Hero ── */}
-        <motion.div 
-          layoutId={`daily-card-${upgrade.day}`} 
-          className="detail-section" 
-          style={{ 
+        <motion.div
+          id="section-hero"
+          layoutId={`daily-card-${upgrade.day}`}
+          className="detail-section"
+          style={{
             marginBottom: 40,
             background: "#ffffff",
             borderRadius: 16,
@@ -266,7 +311,7 @@ export default function DayDetailPage() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 32, alignItems: "start" }}>
 
           {/* ── LEFT: Steps ── */}
-          <div className="detail-section">
+          <div id="section-steps" className="detail-section">
             {dayNum === 2 && (
               <div style={{ marginBottom: 24, borderRadius: 14, overflow: "hidden", border: "1px solid #eaeded", boxShadow: "0 4px 20px rgba(0,0,0,0.03)" }}>
                 <img src="/d2-css-flexbox/axis-cross-axis.png" alt="Flexbox Axis" style={{ width: "100%", display: "block" }} />
@@ -326,6 +371,166 @@ export default function DayDetailPage() {
                 </div>
               );
             })}
+
+            {/* ── D2: Flexbox 1D Concept Clarification ── */}
+            {dayNum === 2 && (
+              <div id="section-concept" style={{ marginTop: 40 }}>
+
+                {/* Section label */}
+                <div style={{ fontFamily: "var(--font-dm-mono, monospace)", fontSize: 11, color: "#545b64", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 18 }}>
+                  🧠 Concept Clarification — Tại sao Flexbox là 1D
+                </div>
+
+                {/* ── Card 1: Core mental model ── */}
+                <div style={{ background: "#f8faff", border: "1px solid #ddecfe", borderLeft: "4px solid #5e8ef7", borderRadius: "8px 14px 14px 8px", padding: "20px 24px", marginBottom: 14 }}>
+                  <div style={{ fontFamily: "var(--font-syne, sans-serif)", fontSize: 15, fontWeight: 700, color: "#16191f", marginBottom: 10 }}>
+                    Flex = cuộc đàm phán trên 1 trục
+                  </div>
+                  <p style={{ fontSize: 14, color: "#545b64", lineHeight: 1.8, marginBottom: 12 }}>
+                    Flexbox được sinh ra để <strong style={{ color: "#16191f" }}>distribute space dọc theo 1 trục</strong> — và để các items <strong style={{ color: "#16191f" }}>tự negotiate kích thước với nhau</strong>.
+                  </p>
+                  <p style={{ fontSize: 14, color: "#545b64", lineHeight: 1.8, marginBottom: 12 }}>
+                    Flexbox là 1D vì cuộc đàm phán giữa container và items <strong style={{ color: "#16191f" }}>chỉ xảy ra trên 1 trục tại một thời điểm</strong>. Và đó chính là lý do bạn phải chọn trục trước (<code style={{ background: "#e8f0fe", padding: "1px 6px", borderRadius: 4, fontSize: 12 }}>flex-direction</code>): phải có 1 trục để negotiate.
+                  </p>
+                  <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                    <div style={{ background: "#e6f6fa", border: "1px solid #b3e4f1", borderRadius: 8, padding: "8px 14px", fontSize: 13, color: "#00818a" }}>
+                      <strong>Flex</strong> → space phụ thuộc <em>content</em>
+                    </div>
+                    <div style={{ background: "#f3f0ff", border: "1px solid #c4b5fd", borderRadius: 8, padding: "8px 14px", fontSize: 13, color: "#6d28d9" }}>
+                      <strong>Grid</strong> → content phụ thuộc <em>space</em>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Card 2: Nav bar "negotiation" visual ── */}
+                <div style={{ background: "#ffffff", border: "1px solid #eaeded", borderRadius: 14, padding: "20px 24px", marginBottom: 14 }}>
+                  <div style={{ fontFamily: "var(--font-dm-mono, monospace)", fontSize: 11, color: "#545b64", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 14 }}>
+                    Ví dụ — Nav bar
+                  </div>
+
+                  {/* Visual nav */}
+                  <div style={{ background: "#16191f", borderRadius: 10, padding: "12px 20px", marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    {["Logo", "Home", "About", "Contact", "Login"].map((item, i) => (
+                      <div key={item} style={{
+                        fontFamily: "var(--font-dm-mono, monospace)", fontSize: 13, fontWeight: 700,
+                        color: i === 0 ? "#5e8ef7" : i === 4 ? "#3ecf8e" : "#e3e7ed",
+                        padding: "6px 12px",
+                        borderRadius: 6,
+                        background: i === 4 ? "rgba(62,207,142,0.1)" : "transparent",
+                      }}>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Axis label */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                    <div style={{ height: 2, flex: 1, background: "linear-gradient(90deg, #ff9900, #ff990000)", borderRadius: 1 }} />
+                    <span style={{ fontFamily: "var(--font-dm-mono, monospace)", fontSize: 11, color: "#ff9900", fontWeight: 700, whiteSpace: "nowrap" }}>
+                      ← main axis (row) →
+                    </span>
+                    <div style={{ height: 2, flex: 1, background: "linear-gradient(270deg, #ff9900, #ff990000)", borderRadius: 1 }} />
+                  </div>
+
+                  <div style={{ background: "#fff3cd", border: "1px solid #ffd966", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#7a5800", fontStyle: "italic" }}>
+                    Mỗi item hỏi nhau: "Mày cần bao nhiêu? Tao lấy phần còn lại." — <strong>justify-content</strong> quyết định cách chia phần đó.
+                  </div>
+                </div>
+
+                {/* ── Card 3: Interactive demo ── */}
+                <div id="section-interactive" style={{ background: "#ffffff", border: "1px solid #eaeded", borderRadius: 14, padding: "20px 24px", marginBottom: 14 }}>
+                  <div style={{ fontFamily: "var(--font-dm-mono, monospace)", fontSize: 11, color: "#545b64", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 16 }}>
+                    Interactive — thử thay đổi các giá trị
+                  </div>
+
+                  {/* Controls */}
+                  <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
+                    {[
+                      { label: "flex-direction", value: flexDir, setter: setFlexDir, opts: ["row", "column"] },
+                      { label: "justify-content (main axis)", value: flexJC, setter: setFlexJC, opts: ["flex-start", "center", "flex-end", "space-between", "space-around"] },
+                      { label: "align-items (cross axis)", value: flexAI, setter: setFlexAI, opts: ["flex-start", "center", "flex-end", "stretch"] },
+                    ].map(({ label, value, setter, opts }) => (
+                      <div key={label} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        <span style={{ fontFamily: "var(--font-dm-mono, monospace)", fontSize: 11, color: "#545b64" }}>{label}</span>
+                        <select
+                          value={value}
+                          onChange={(e) => (setter as (v: string) => void)(e.target.value)}
+                          style={{ fontSize: 13, padding: "5px 10px", borderRadius: 8, border: "1px solid #eaeded", background: "#f2f3f5", color: "#16191f", cursor: "pointer", fontFamily: "var(--font-dm-mono, monospace)" }}
+                        >
+                          {opts.map((o) => <option key={o} value={o}>{o}</option>)}
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Flex demo container */}
+                  <div style={{
+                    border: "1px solid #eaeded", borderRadius: 10, padding: 16, minHeight: 200,
+                    display: "flex",
+                    flexDirection: flexDir,
+                    justifyContent: flexJC,
+                    alignItems: flexAI,
+                    gap: 8, background: "#f8faff",
+                  }}>
+                    {["A", "B", "C"].map((l) => (
+                      <div key={l} style={{ background: "#e6f6fa", color: "#00818a", border: "1px solid #b3e4f1", borderRadius: 8, padding: "10px 18px", fontSize: 14, fontWeight: 700, fontFamily: "var(--font-dm-mono, monospace)" }}>
+                        {l}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Axis description */}
+                  <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 4 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#545b64" }}>
+                      <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff9900", flexShrink: 0, display: "inline-block" }} />
+                      <span style={{ color: "#ff9900", fontWeight: 700 }}>main axis {flexDir === "row" ? "→" : "↓"}</span>
+                      <span>— justify-content phân phối space theo chiều này</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#545b64" }}>
+                      <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#1d8102", flexShrink: 0, display: "inline-block" }} />
+                      <span style={{ color: "#1d8102", fontWeight: 700 }}>cross axis {flexDir === "row" ? "↓" : "→"}</span>
+                      <span>— align-items căn chỉnh theo chiều này</span>
+                    </div>
+                  </div>
+
+                  {/* CSS output */}
+                  <div style={{ marginTop: 14, background: "#16191f", borderRadius: 8, padding: "12px 16px", fontFamily: "var(--font-dm-mono, monospace)", fontSize: 12, color: "#e3e7ed", lineHeight: 1.8 }}>
+                    <span style={{ color: "#9cdcfe" }}>.container</span> {"{"}<br />
+                    {"  "}<span style={{ color: "#9cdcfe" }}>display</span>: <span style={{ color: "#ce9178" }}>flex</span>;<br />
+                    {"  "}<span style={{ color: "#9cdcfe" }}>flex-direction</span>: <span style={{ color: "#4fc1ff" }}>{flexDir}</span>;<br />
+                    {"  "}<span style={{ color: "#9cdcfe" }}>justify-content</span>: <span style={{ color: "#4fc1ff" }}>{flexJC}</span>; <span style={{ color: "#6a9955" }}>/* main axis */</span><br />
+                    {"  "}<span style={{ color: "#9cdcfe" }}>align-items</span>: <span style={{ color: "#4fc1ff" }}>{flexAI}</span>; <span style={{ color: "#6a9955" }}>/* cross axis */</span><br />
+                    {"}"}
+                  </div>
+                </div>
+
+                {/* ── Card 4: Thinking order ── */}
+                <div style={{ background: "#f2f3f5", border: "1px solid #eaeded", borderRadius: 14, padding: "20px 24px" }}>
+                  <div style={{ fontFamily: "var(--font-dm-mono, monospace)", fontSize: 11, color: "#545b64", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 16 }}>
+                    Thứ tự suy nghĩ khi dùng Flex
+                  </div>
+                  {[
+                    { num: "01", prop: "flex-direction", title: "Chọn trục", desc: "Content chảy theo row hay column? Đây là câu hỏi đầu tiên vì nó quyết định main axis — trục negotiate." },
+                    { num: "02", prop: "justify-content", title: "Distribute trên main axis", desc: "Items chia space với nhau như thế nào? flex-start, center, space-between..." },
+                    { num: "03", prop: "align-items", title: "Align trên cross axis", desc: "Items thẳng hàng với nhau như thế nào? Chiều vuông góc với main axis." },
+                  ].map(({ num, prop, title, desc }) => (
+                    <div key={num} style={{ display: "flex", gap: 16, marginBottom: 16, alignItems: "flex-start" }}>
+                      <div style={{ fontFamily: "var(--font-dm-mono, monospace)", fontSize: 18, fontWeight: 800, color: "#eaeded", flexShrink: 0, lineHeight: 1 }}>
+                        {num}
+                      </div>
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                          <span style={{ fontFamily: "var(--font-syne, sans-serif)", fontSize: 14, fontWeight: 700, color: "#16191f" }}>{title}</span>
+                          <code style={{ fontFamily: "var(--font-dm-mono, monospace)", fontSize: 11, background: "#e6f6fa", color: "#00818a", padding: "2px 8px", borderRadius: 4 }}>{prop}</code>
+                        </div>
+                        <p style={{ fontSize: 13, color: "#545b64", lineHeight: 1.6, margin: 0 }}>{desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
+            )}
           </div>
 
           {/* ── RIGHT: Checklist + Notes ── */}
@@ -432,7 +637,72 @@ export default function DayDetailPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      {mounted && createPortal(
+        <div style={{
+          position: "fixed",
+          right: 6,
+          top: "50%",
+          transform: "translateY(-50%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          zIndex: 9999,
+          pointerEvents: "none",
+        }}>
+          {navSections.map(({ id, label }, i) => {
+            const isActive = activeSection === id;
+            return (
+              <div key={id} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                {i > 0 && (
+                  <div style={{ width: 1, height: 28, background: "#d5dbdb" }} />
+                )}
+                <div style={{ position: "relative", display: "flex", alignItems: "center", pointerEvents: "auto" }}>
+                  {/* Label */}
+                  <div style={{
+                    position: "absolute",
+                    right: "calc(100% + 10px)",
+                    whiteSpace: "nowrap",
+                    fontFamily: "var(--font-dm-mono, monospace)",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    background: "#16191f",
+                    padding: "4px 10px",
+                    borderRadius: 6,
+                    opacity: isActive ? 1 : 0,
+                    transform: isActive ? "translateX(0)" : "translateX(6px)",
+                    transition: "all 0.2s ease",
+                    pointerEvents: "none",
+                  }}>
+                    {label}
+                  </div>
+                  {/* Dot */}
+                  <button
+                    onClick={() => scrollToSection(id)}
+                    title={label}
+                    style={{
+                      width: isActive ? 12 : 6,
+                      height: isActive ? 12 : 6,
+                      borderRadius: "50%",
+                      background: isActive ? "#00a1c9" : "#d5dbdb",
+                      border: isActive ? "2px solid rgba(0,161,201,0.25)" : "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      transition: "all 0.25s ease",
+                      flexShrink: 0,
+                      outline: "none",
+                      boxShadow: isActive ? "0 0 8px rgba(0,161,201,0.4)" : "none",
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>,
+        document.body
+      )}
+    </>
   );
 }
 

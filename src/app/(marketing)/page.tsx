@@ -239,14 +239,12 @@ export default function EntryPage() {
             {PROJECTS.map((project) => {
               const statusStyle = STATUS_STYLE[project.status];
               const CardTag = project.internal ? Link : "a";
-              const cardProps = project.internal
-                ? { href: project.href }
-                : { href: project.href, target: "_blank", rel: "noreferrer" };
 
               return (
                 <CardTag
                   key={project.id}
-                  {...(cardProps as Record<string, string>)}
+                  href={project.href}
+                  {...(project.internal ? {} : { target: "_blank", rel: "noreferrer" })}
                   style={{ textDecoration: "none", display: "block" }}
                   className="group"
                 >
