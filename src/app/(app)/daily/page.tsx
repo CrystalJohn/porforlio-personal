@@ -23,7 +23,10 @@ export default function DailyPage() {
   // Hydrate from localStorage on mount + listen for cross-component updates
   useEffect(() => {
     const savedTab = sessionStorage.getItem("daily_active_tab");
-    if (savedTab !== null) setActiveTab(Number(savedTab));
+    if (savedTab !== null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveTab(Number(savedTab));
+    }
 
     const syncCompleted = () => {
       const days = getCompletedDays();

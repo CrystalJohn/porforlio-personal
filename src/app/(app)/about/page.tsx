@@ -27,7 +27,7 @@ export default function AboutPage() {
         <div style={{ fontFamily: "var(--font-dm-mono, monospace)", fontSize: 11, color: "var(--muted)", marginBottom: 12, letterSpacing: "0.08em", textTransform: "uppercase" }}>📍 Current Status</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16 }}>
           {[
-            { label: "Journey", value: "Fresher → Junior" },
+            { label: "Journey", value: "Software Engineer" },
             { label: "Daily goal", value: "1 skill/day" },
             { label: "Method", value: "STAR + SWOT" },
             { label: "Stack", value: "Next.js + Vercel" },

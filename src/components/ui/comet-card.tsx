@@ -79,7 +79,7 @@ export const CometCard = ({
   };
 
   return (
-    <div className={cn("perspective-distant transform-3d", className)}>
+    <div className={cn("flex items-center justify-center perspective-[1000px]", className)}>
       <motion.div
         ref={ref}
         onMouseMove={handleMouseMove}
@@ -89,6 +89,7 @@ export const CometCard = ({
           rotateY,
           translateX,
           translateY,
+          transformStyle: "preserve-3d",
           boxShadow:
             "rgba(0, 0, 0, 0.01) 0px 520px 146px 0px, rgba(0, 0, 0, 0.04) 0px 333px 133px 0px, rgba(0, 0, 0, 0.26) 0px 83px 83px 0px, rgba(0, 0, 0, 0.29) 0px 21px 46px 0px",
         }}

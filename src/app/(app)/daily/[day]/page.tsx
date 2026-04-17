@@ -119,7 +119,26 @@ export default function DayDetailPage() {
     setTimeout(() => setNoteSaved(false), 1500);
   }
 
-  if (!upgrade) {
+  const doneCount   = detail?.checklist.filter((c: ChecklistItem) => checked[c.id]).length || 0;
+  const totalCount  = detail?.checklist.length || 0;
+  const progressPct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+  const isCompleted = isDone || (doneCount === totalCount && totalCount > 0);
+
+  // ── save global completed status ───────────────────────────────
+  useEffect(() => {
+    if (totalCount === 0) return;
+    const isDoneStatus = doneCount === totalCount;
+    try {
+      const saved = localStorage.getItem("daily_completed_status");
+      const status = saved ? JSON.parse(saved) : {};
+      if (status[dayNum] !== isDoneStatus) {
+        status[dayNum] = isDoneStatus;
+        localStorage.setItem("daily_completed_status", JSON.stringify(status));
+      }
+    } catch {}
+  }, [doneCount, totalCount, dayNum]);
+
+  if (!upgrade || !detail) {
     return (
       <div style={pageStyle}>
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 32px", textAlign: "center", paddingTop: 80 }}>
@@ -132,25 +151,6 @@ export default function DayDetailPage() {
       </div>
     );
   }
-
-  const doneCount   = detail?.checklist.filter((c: any) => checked[c.id]).length || 0;
-  const totalCount  = detail?.checklist.length || 0;
-  const progressPct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
-  const isCompleted = isDone || (doneCount === totalCount && totalCount > 0);
-
-  // ── save global completed status ───────────────────────────────
-  useEffect(() => {
-    if (totalCount === 0) return;
-    const isDone = doneCount === totalCount;
-    try {
-      const saved = localStorage.getItem("daily_completed_status");
-      const status = saved ? JSON.parse(saved) : {};
-      if (status[dayNum] !== isDone) {
-        status[dayNum] = isDone;
-        localStorage.setItem("daily_completed_status", JSON.stringify(status));
-      }
-    } catch(e) {}
-  }, [doneCount, totalCount, dayNum]);
 
   return (
     <>
@@ -433,7 +433,7 @@ export default function DayDetailPage() {
                   </div>
 
                   <div style={{ background: "#fff3cd", border: "1px solid #ffd966", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#7a5800", fontStyle: "italic" }}>
-                    Mỗi item hỏi nhau: "Mày cần bao nhiêu? Tao lấy phần còn lại." — <strong>justify-content</strong> quyết định cách chia phần đó.
+                    Mỗi item hỏi nhau: &quot;Mày cần bao nhiêu? Tao lấy phần còn lại.&quot; — <strong>justify-content</strong> quyết định cách chia phần đó.
                   </div>
                 </div>
 
@@ -498,8 +498,8 @@ export default function DayDetailPage() {
                     <span style={{ color: "#9cdcfe" }}>.container</span> {"{"}<br />
                     {"  "}<span style={{ color: "#9cdcfe" }}>display</span>: <span style={{ color: "#ce9178" }}>flex</span>;<br />
                     {"  "}<span style={{ color: "#9cdcfe" }}>flex-direction</span>: <span style={{ color: "#4fc1ff" }}>{flexDir}</span>;<br />
-                    {"  "}<span style={{ color: "#9cdcfe" }}>justify-content</span>: <span style={{ color: "#4fc1ff" }}>{flexJC}</span>; <span style={{ color: "#6a9955" }}>/* main axis */</span><br />
-                    {"  "}<span style={{ color: "#9cdcfe" }}>align-items</span>: <span style={{ color: "#4fc1ff" }}>{flexAI}</span>; <span style={{ color: "#6a9955" }}>/* cross axis */</span><br />
+                    {"  "}<span style={{ color: "#9cdcfe" }}>justify-content</span>: <span style={{ color: "#4fc1ff" }}>{flexJC}</span>; <span style={{ color: "#6a9955" }}>{"/* main axis */"}</span><br />
+                    {"  "}<span style={{ color: "#9cdcfe" }}>align-items</span>: <span style={{ color: "#4fc1ff" }}>{flexAI}</span>; <span style={{ color: "#6a9955" }}>{"/* cross axis */"}</span><br />
                     {"}"}
                   </div>
                 </div>

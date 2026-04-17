@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useState } from "react";
 
 // Nav order for direction-aware transitions
 const NAV_ORDER: Record<string, number> = {
@@ -49,27 +49,25 @@ const variants = {
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const prevPathRef = useRef<string>(pathname);
+  const [tracker, setTracker] = useState({ path: pathname, direction: 0 });
 
-  const prevIdx = getNavIndex(prevPathRef.current);
-  const currIdx = getNavIndex(pathname);
-
-  // direction: +1 = forward (right), -1 = backward (left), 0 = same tier
-  let direction = 0;
-  if (prevIdx !== -1 && currIdx !== -1 && prevIdx !== currIdx) {
-    direction = currIdx > prevIdx ? 1 : -1;
+  if (tracker.path !== pathname) {
+    const prevIdx = getNavIndex(tracker.path);
+    const currIdx = getNavIndex(pathname);
+    let newDirection = 0;
+    if (prevIdx !== -1 && currIdx !== -1 && prevIdx !== currIdx) {
+      newDirection = currIdx > prevIdx ? 1 : -1;
+    }
+    setTracker({ path: pathname, direction: newDirection });
   }
 
-  // Update ref after computing direction
-  if (prevPathRef.current !== pathname) {
-    prevPathRef.current = pathname;
-  }
+  const currentDirection = tracker.path === pathname ? tracker.direction : 0;
 
   return (
-    <AnimatePresence mode="popLayout" custom={direction}>
+    <AnimatePresence mode="popLayout" custom={currentDirection}>
       <motion.div
         key={pathname}
-        custom={direction}
+        custom={currentDirection}
         variants={variants}
         initial="enter"
         animate="center"
