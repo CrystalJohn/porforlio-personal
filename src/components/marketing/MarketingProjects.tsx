@@ -66,18 +66,9 @@ export function MarketingProjects() {
       <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {showcaseProjects.map((project, idx) => {
           const statusStyle = STATUS_STYLE[project.status];
-          const CardTag = project.internal ? Link : "a";
-          const cardHref = project.internal ? `/projects/${project.id}` : project.href;
 
-          return (
-            <FadeIn key={project.id} delay={100 + (idx * 50)}>
-              <CardTag
-                href={cardHref}
-                {...(project.internal ? {} : { target: "_blank", rel: "noreferrer" })}
-                style={{ textDecoration: "none", display: "block", height: "100%" }}
-                className="group"
-              >
-                <li className="list-none h-full">
+          const cardInner = (
+            <li className="list-none h-full">
                   <div className="relative h-full rounded-2xl border border-white/5 bg-[#0D0D0D] p-2 md:rounded-3xl md:p-3 transition-colors duration-300 group-hover:border-white/10">
                     <GlowingEffect
                       spread={40}
@@ -180,7 +171,29 @@ export function MarketingProjects() {
                     </div>
                   </div>
                 </li>
-              </CardTag>
+          );
+
+          return (
+            <FadeIn key={project.id} delay={100 + (idx * 50)}>
+              {project.internal ? (
+                <Link
+                  href={`/projects/${project.id}`}
+                  style={{ textDecoration: "none", display: "block", height: "100%" }}
+                  className="group"
+                >
+                  {cardInner}
+                </Link>
+              ) : (
+                <a
+                  href={project.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "none", display: "block", height: "100%" }}
+                  className="group"
+                >
+                  {cardInner}
+                </a>
+              )}
             </FadeIn>
           );
         })}
