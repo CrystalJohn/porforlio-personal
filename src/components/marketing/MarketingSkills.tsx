@@ -7,25 +7,22 @@ import { OrbitingCircles } from "@/components/ui/orbiting-circles";
 import { cn } from "@/lib/utils";
 
 import {
-  FaFigma,
-  FaReact,
-  FaNodeJs,
-  FaJs,
-  FaHtml5,
-  FaGithub,
-  FaLinkedin,
-} from "react-icons/fa";
-import {
-  SiNextdotjs,
-  SiMongodb,
-  SiExpress,
-  SiRedux,
-  SiTypescript,
-  SiTailwindcss,
-  SiFramer,
-  SiVercel,
-  SiGatsby,
-} from "react-icons/si";
+  IconFigma,
+  IconReact,
+  IconNodeJs,
+  IconJavaScript,
+  IconHtml5,
+  IconNextJs,
+  IconMongoDB,
+  IconExpress,
+  IconRedux,
+  IconTypescript,
+  IconTailwindCSS,
+  IconVercel,
+  IconGatsby,
+  IconGithub,
+  IconLinkedin,
+} from "@/components/ui/brand-icons";
 
 const Circle = React.forwardRef<
   HTMLDivElement,
@@ -92,27 +89,27 @@ export function MarketingSkills() {
       </FadeIn>
 
       <div
-        className="relative flex w-full max-w-[800px] flex-col items-center justify-center overflow-hidden rounded-lg"
+        className="relative flex w-full max-w-200 flex-col items-center justify-center overflow-hidden rounded-lg"
         ref={containerRef}
       >
         {/* Top Icons */}
         <div className="flex flex-col items-center gap-6 mt-10">
           {/* Row 1 */}
           <div className="flex gap-4">
-            <Circle ref={r1n1}><FaFigma className="w-full h-full text-pink-500" /></Circle>
-            <Circle ref={r1n2}><FaReact className="w-full h-full text-cyan-400" /></Circle>
-            <Circle ref={r1n3}><SiTailwindcss className="w-full h-full text-blue-400" /></Circle>
-            <Circle ref={r1n4}><FaNodeJs className="w-full h-full text-green-500" /></Circle>
-            <Circle ref={r1n5}><FaJs className="w-full h-full text-yellow-400" /></Circle>
-            <Circle ref={r1n6}><FaHtml5 className="w-full h-full text-orange-500" /></Circle>
+            <Circle ref={r1n1}><IconFigma className="w-full h-full" /></Circle>
+            <Circle ref={r1n2}><IconReact className="w-full h-full text-cyan-400" /></Circle>
+            <Circle ref={r1n3}><IconTailwindCSS className="w-full h-full text-blue-400" /></Circle>
+            <Circle ref={r1n4}><IconNodeJs className="w-full h-full text-green-500" /></Circle>
+            <Circle ref={r1n5}><IconJavaScript className="w-full h-full" /></Circle>
+            <Circle ref={r1n6}><IconHtml5 className="w-full h-full" /></Circle>
           </div>
           {/* Row 2 */}
           <div className="flex gap-4">
-            <Circle ref={r2n1}><SiVercel className="w-full h-full text-white" /></Circle>
-            <Circle ref={r2n2}><SiNextdotjs className="w-full h-full text-white" /></Circle>
-            <Circle ref={r2n3}><SiGatsby className="w-full h-full text-purple-500" /></Circle>
-            <Circle ref={r2n4}><SiExpress className="w-full h-full text-gray-300" /></Circle>
-            <Circle ref={r2n5}><SiMongodb className="w-full h-full text-green-600" /></Circle>
+            <Circle ref={r2n1}><IconVercel className="w-full h-full text-white" /></Circle>
+            <Circle ref={r2n2}><IconNextJs className="w-full h-full" /></Circle>
+            <Circle ref={r2n3}><IconGatsby className="w-full h-full text-purple-500" /></Circle>
+            <Circle ref={r2n4}><IconExpress className="w-full h-full text-gray-300" /></Circle>
+            <Circle ref={r2n5}><IconMongoDB className="w-full h-full text-green-600" /></Circle>
           </div>
         </div>
 
@@ -122,7 +119,7 @@ export function MarketingSkills() {
         {/* Center Node (Logo) */}
         <div
           ref={centerRef}
-          className="z-20 flex size-28 items-center justify-center rounded-full bg-gradient-to-b from-purple-500/30 to-purple-900/30 border border-purple-500/50 shadow-[0_0_60px_-10px_rgba(156,64,255,0.6)] backdrop-blur-xl mb-10"
+          className="z-20 flex size-28 items-center justify-center rounded-full bg-linear-to-b from-purple-500/30 to-purple-900/30 border border-purple-500/50 shadow-[0_0_60px_-10px_rgba(156,64,255,0.6)] backdrop-blur-xl mb-10"
         >
           <span className="text-5xl font-bold font-sans tracking-tighter text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">F</span>
         </div>
@@ -131,18 +128,18 @@ export function MarketingSkills() {
         <div className="absolute inset-0 top-1/2 flex items-center justify-center scale-y-[0.35] pointer-events-none">
           {/* Outer Orbit */}
           <OrbitingCircles duration={30} radius={400}>
-            <div className="scale-y-[2.85]"><FaGithub className="text-white size-8" /></div>
+            <div className="scale-y-[2.85]"><IconGithub className="text-white size-8" /></div>
           </OrbitingCircles>
           <OrbitingCircles duration={30} radius={400} delay={15}>
-            <div className="scale-y-[2.85]"><FaLinkedin className="text-blue-500 size-8" /></div>
+            <div className="scale-y-[2.85]"><IconLinkedin className="text-blue-500 size-8" /></div>
           </OrbitingCircles>
           
           {/* Inner Orbit */}
           <OrbitingCircles duration={20} radius={280} reverse>
-            <div className="scale-y-[2.85]"><SiTypescript className="text-blue-400 size-6" /></div>
+            <div className="scale-y-[2.85]"><IconTypescript className="text-blue-400 size-6" /></div>
           </OrbitingCircles>
           <OrbitingCircles duration={20} radius={280} reverse delay={10}>
-            <div className="scale-y-[2.85]"><SiRedux className="text-purple-400 size-6" /></div>
+            <div className="scale-y-[2.85]"><IconRedux className="text-purple-400 size-6" /></div>
           </OrbitingCircles>
         </div>
 

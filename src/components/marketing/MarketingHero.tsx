@@ -76,7 +76,7 @@ export function MarketingHero() {
             </svg>
           </Link>
           <a
-            href="https://github.com"
+            href="https://github.com/CrystalJohn"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 transition-all duration-300 hover:border-white/30 hover:text-white"

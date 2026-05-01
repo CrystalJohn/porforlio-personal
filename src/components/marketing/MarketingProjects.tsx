@@ -67,11 +67,12 @@ export function MarketingProjects() {
         {showcaseProjects.map((project, idx) => {
           const statusStyle = STATUS_STYLE[project.status];
           const CardTag = project.internal ? Link : "a";
+          const cardHref = project.internal ? `/projects/${project.id}` : project.href;
 
           return (
             <FadeIn key={project.id} delay={100 + (idx * 50)}>
               <CardTag
-                href={project.href}
+                href={cardHref}
                 {...(project.internal ? {} : { target: "_blank", rel: "noreferrer" })}
                 style={{ textDecoration: "none", display: "block", height: "100%" }}
                 className="group"
