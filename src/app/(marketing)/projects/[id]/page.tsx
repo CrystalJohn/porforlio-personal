@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
 import { PROJECTS } from "@/lib/marketing-data";
-import { Box, Code2, Cpu, Sparkles } from "lucide-react";
+import { Code2, Cpu, Sparkles, Utensils } from "lucide-react";
 import { ProjectDetailView } from "./ProjectDetailView";
 
 const getIcon = (id: string) => {
   switch (id) {
     case "frontend-daily":
       return <Sparkles className="h-6 w-6 text-white" />;
-    case "html-css-layout":
-      return <Box className="h-6 w-6 text-white" />;
+    case "real-time-food-delivery":
+      return <Utensils className="h-6 w-6 text-white" />;
     case "js-async":
       return <Cpu className="h-6 w-6 text-white" />;
     default:

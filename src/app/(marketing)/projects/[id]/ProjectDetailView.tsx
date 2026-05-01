@@ -48,6 +48,7 @@ interface Props {
 
 export function ProjectDetailView({ project, icon }: Props) {
   const statusStyle = STATUS_STYLE[project.status];
+  const isExternalProject = project.href.startsWith("http");
 
   return (
     <motion.div
@@ -148,6 +149,21 @@ export function ProjectDetailView({ project, icon }: Props) {
           </motion.span>
         </motion.div>
 
+        {project.videoSrc ? (
+          <motion.div
+            variants={item}
+            className="mb-10 overflow-hidden rounded-3xl border border-white/10 bg-black/30 p-2 shadow-[0_24px_80px_-40px_rgba(156,64,255,0.5)]"
+          >
+            <video
+              src={project.videoSrc}
+              controls
+              preload="metadata"
+              playsInline
+              className="aspect-video w-full rounded-2xl bg-black object-cover"
+            />
+          </motion.div>
+        ) : null}
+
         {/* Divider */}
         <motion.div
           variants={item}
@@ -187,8 +203,10 @@ export function ProjectDetailView({ project, icon }: Props) {
             {project.tech.map((t, i) => (
               <motion.span
                 key={t}
+                className="shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_8px_24px_-18px_rgba(156,64,255,0.9)]"
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ y: -2, scale: 1.04 }}
                 transition={{
                   delay: 0.32 + i * 0.05,
                   duration: 0.35,
@@ -197,12 +215,12 @@ export function ProjectDetailView({ project, icon }: Props) {
                 style={{
                   fontFamily: "var(--font-dm-mono, monospace)",
                   fontSize: 11,
-                  color: "#666",
-                  background: "#111",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                  padding: "6px 14px",
-                  borderRadius: 8,
-                  letterSpacing: "0.04em",
+                  color: "#d8ccff",
+                  background: "linear-gradient(180deg, rgba(156,64,255,0.18), rgba(255,255,255,0.04))",
+                  border: "1px solid rgba(156,64,255,0.28)",
+                  padding: "7px 15px",
+                  borderRadius: 999,
+                  letterSpacing: "0.05em",
                   display: "inline-block",
                 }}
               >
@@ -220,24 +238,47 @@ export function ProjectDetailView({ project, icon }: Props) {
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
             style={{ display: "inline-block" }}
           >
-            <Link
-              href={project.href}
-              className="inline-flex items-center gap-2 group"
-              style={{
-                fontFamily: "var(--font-dm-mono, monospace)",
-                fontSize: 12,
-                letterSpacing: "0.08em",
-                color: "#e8e8e8",
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                padding: "12px 24px",
-                borderRadius: 10,
-                textDecoration: "none",
-              }}
-            >
-              VIEW PROJECT
-              <ExternalLink className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
+            {isExternalProject ? (
+              <a
+                href={project.href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 group"
+                style={{
+                  fontFamily: "var(--font-dm-mono, monospace)",
+                  fontSize: 12,
+                  letterSpacing: "0.08em",
+                  color: "#e8e8e8",
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  padding: "12px 24px",
+                  borderRadius: 10,
+                  textDecoration: "none",
+                }}
+              >
+                VIEW PROJECT
+                <ExternalLink className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+            ) : (
+              <Link
+                href={project.href}
+                className="inline-flex items-center gap-2 group"
+                style={{
+                  fontFamily: "var(--font-dm-mono, monospace)",
+                  fontSize: 12,
+                  letterSpacing: "0.08em",
+                  color: "#e8e8e8",
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  padding: "12px 24px",
+                  borderRadius: 10,
+                  textDecoration: "none",
+                }}
+              >
+                VIEW PROJECT
+                <ExternalLink className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            )}
           </motion.div>
         </motion.div>
       </motion.div>

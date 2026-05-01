@@ -1,69 +1,72 @@
 "use client";
 
-import React, { useRef } from "react";
+import type { SVGProps } from "react";
 import { FadeIn } from "@/components/marketing/FadeIn";
-import { AnimatedBeam } from "@/components/ui/animated-beam";
-import { OrbitingCircles } from "@/components/ui/orbiting-circles";
 import { cn } from "@/lib/utils";
 
 import {
-  IconFigma,
-  IconReact,
-  IconNodeJs,
-  IconJavaScript,
-  IconHtml5,
-  IconNextJs,
-  IconMongoDB,
   IconExpress,
-  IconRedux,
-  IconTypescript,
+  IconFigma,
+  IconFramer,
+  IconHtml5,
+  IconJavaScript,
+  IconMongoDB,
+  IconNextJs,
+  IconNodeJs,
+  IconReact,
   IconTailwindCSS,
+  IconTypescript,
   IconVercel,
-  IconGatsby,
-  IconGithub,
-  IconLinkedin,
 } from "@/components/ui/brand-icons";
 
-const Circle = React.forwardRef<
-  HTMLDivElement,
-  { className?: string; children?: React.ReactNode }
->(({ className, children }, ref) => {
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        "z-10 flex size-12 items-center justify-center rounded-full border border-white/10 bg-[#111] p-3 shadow-[0_0_20px_-12px_rgba(255,255,255,0.8)]",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-});
-Circle.displayName = "Circle";
+type SkillIcon = (props: SVGProps<SVGSVGElement>) => React.ReactElement;
+
+const skillGroups: {
+  title: string;
+  accent: string;
+  summary: string;
+  skills: { label: string; value: string; icon: SkillIcon; className: string }[];
+}[] = [
+  {
+    title: "Frontend Core",
+    accent: "Production UI",
+    summary: "Build typed, reusable, App Router-based interfaces with strong component structure.",
+    skills: [
+      { label: "React", value: "Component architecture", icon: IconReact, className: "text-cyan-400" },
+      { label: "Next.js", value: "App Router & routing", icon: IconNextJs, className: "" },
+      { label: "TypeScript", value: "Strict type safety", icon: IconTypescript, className: "" },
+      { label: "JavaScript", value: "Core interaction logic", icon: IconJavaScript, className: "" },
+    ],
+  },
+  {
+    title: "UI, Styling & Motion",
+    accent: "Portfolio-ready UX",
+    summary: "Convert design ideas into responsive, polished interfaces with tasteful animation.",
+    skills: [
+      { label: "Tailwind CSS", value: "Responsive systems", icon: IconTailwindCSS, className: "text-blue-400" },
+      { label: "Framer Motion", value: "Micro-interactions", icon: IconFramer, className: "text-purple-400" },
+      { label: "Figma", value: "Design handoff", icon: IconFigma, className: "" },
+      { label: "HTML5", value: "Semantic layout", icon: IconHtml5, className: "" },
+    ],
+  },
+  {
+    title: "Backend & Delivery",
+    accent: "Deployable products",
+    summary: "Connect UI to APIs, data, and production hosting workflows.",
+    skills: [
+      { label: "Node.js", value: "Server runtime", icon: IconNodeJs, className: "text-green-500" },
+      { label: "Express", value: "API foundations", icon: IconExpress, className: "text-gray-300" },
+      { label: "MongoDB", value: "Document data", icon: IconMongoDB, className: "text-green-600" },
+      { label: "Vercel", value: "Production deploy", icon: IconVercel, className: "text-white" },
+    ],
+  },
+];
 
 export function MarketingSkills() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const centerRef = useRef<HTMLDivElement>(null);
-
-  // Rows 1 and 2
-  const r1n1 = useRef<HTMLDivElement>(null);
-  const r1n2 = useRef<HTMLDivElement>(null);
-  const r1n3 = useRef<HTMLDivElement>(null);
-  const r1n4 = useRef<HTMLDivElement>(null);
-  const r1n5 = useRef<HTMLDivElement>(null);
-  const r1n6 = useRef<HTMLDivElement>(null);
-
-  const r2n1 = useRef<HTMLDivElement>(null);
-  const r2n2 = useRef<HTMLDivElement>(null);
-  const r2n3 = useRef<HTMLDivElement>(null);
-  const r2n4 = useRef<HTMLDivElement>(null);
-  const r2n5 = useRef<HTMLDivElement>(null);
-
   return (
-    <div className="relative z-10 w-full max-w-275 mx-auto px-8 py-32 flex flex-col items-center">
+    <div className="relative z-10 w-full max-w-275 mx-auto px-8 py-32">
       <FadeIn delay={0}>
-        <div className="text-center mb-16">
+        <div className="mx-auto mb-14 max-w-3xl text-center">
           <h2
             style={{
               fontFamily: "var(--font-syne, sans-serif)",
@@ -83,79 +86,57 @@ export function MarketingSkills() {
               lineHeight: 1.6,
             }}
           >
-            What I primarily work with on a day-to-day basis.
+            A focused stack for building fast, typed, responsive web products from UI to deployment.
           </p>
         </div>
       </FadeIn>
 
-      <div
-        className="relative flex w-full max-w-200 flex-col items-center justify-center overflow-hidden rounded-lg"
-        ref={containerRef}
-      >
-        {/* Top Icons */}
-        <div className="flex flex-col items-center gap-6 mt-10">
-          {/* Row 1 */}
-          <div className="flex gap-4">
-            <Circle ref={r1n1}><IconFigma className="w-full h-full" /></Circle>
-            <Circle ref={r1n2}><IconReact className="w-full h-full text-cyan-400" /></Circle>
-            <Circle ref={r1n3}><IconTailwindCSS className="w-full h-full text-blue-400" /></Circle>
-            <Circle ref={r1n4}><IconNodeJs className="w-full h-full text-green-500" /></Circle>
-            <Circle ref={r1n5}><IconJavaScript className="w-full h-full" /></Circle>
-            <Circle ref={r1n6}><IconHtml5 className="w-full h-full" /></Circle>
-          </div>
-          {/* Row 2 */}
-          <div className="flex gap-4">
-            <Circle ref={r2n1}><IconVercel className="w-full h-full text-white" /></Circle>
-            <Circle ref={r2n2}><IconNextJs className="w-full h-full" /></Circle>
-            <Circle ref={r2n3}><IconGatsby className="w-full h-full text-purple-500" /></Circle>
-            <Circle ref={r2n4}><IconExpress className="w-full h-full text-gray-300" /></Circle>
-            <Circle ref={r2n5}><IconMongoDB className="w-full h-full text-green-600" /></Circle>
-          </div>
-        </div>
+      <div className="grid gap-4 lg:grid-cols-3">
+        {skillGroups.map((group, groupIndex) => (
+          <FadeIn key={group.title} delay={100 + groupIndex * 100} className="h-full">
+            <section className="group relative h-full overflow-hidden rounded-3xl border border-white/10 bg-white/3 p-6 transition duration-300 hover:-translate-y-1 hover:border-purple-400/40 hover:bg-white/5">
+              <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-linear-to-r from-transparent via-purple-400/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="mb-6">
+                <span className="mb-3 inline-flex rounded-full border border-purple-400/20 bg-purple-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-purple-200">
+                  {group.accent}
+                </span>
+                <h3
+                  className="mb-3 text-2xl font-bold text-white"
+                  style={{ fontFamily: "var(--font-syne, sans-serif)" }}
+                >
+                  {group.title}
+                </h3>
+                <p className="text-sm leading-6 text-white/55">{group.summary}</p>
+              </div>
 
-        {/* Spacing down to center node */}
-        <div className="h-48 w-full" />
+              <div className="grid gap-3">
+                {group.skills.map((skill) => {
+                  const Icon = skill.icon;
 
-        {/* Center Node (Logo) */}
-        <div
-          ref={centerRef}
-          className="z-20 flex size-28 items-center justify-center rounded-full bg-linear-to-b from-purple-500/30 to-purple-900/30 border border-purple-500/50 shadow-[0_0_60px_-10px_rgba(156,64,255,0.6)] backdrop-blur-xl mb-10"
-        >
-          <span className="text-5xl font-bold font-sans tracking-tighter text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">F</span>
-        </div>
-
-        {/* Squashed Orbit Wrapper */}
-        <div className="absolute inset-0 top-1/2 flex items-center justify-center scale-y-[0.35] pointer-events-none">
-          {/* Outer Orbit */}
-          <OrbitingCircles duration={30} radius={400}>
-            <div className="scale-y-[2.85]"><IconGithub className="text-white size-8" /></div>
-          </OrbitingCircles>
-          <OrbitingCircles duration={30} radius={400} delay={15}>
-            <div className="scale-y-[2.85]"><IconLinkedin className="text-blue-500 size-8" /></div>
-          </OrbitingCircles>
-          
-          {/* Inner Orbit */}
-          <OrbitingCircles duration={20} radius={280} reverse>
-            <div className="scale-y-[2.85]"><IconTypescript className="text-blue-400 size-6" /></div>
-          </OrbitingCircles>
-          <OrbitingCircles duration={20} radius={280} reverse delay={10}>
-            <div className="scale-y-[2.85]"><IconRedux className="text-purple-400 size-6" /></div>
-          </OrbitingCircles>
-        </div>
-
-        {/* Beams */}
-        <AnimatedBeam containerRef={containerRef} fromRef={r1n1} toRef={centerRef} duration={3} />
-        <AnimatedBeam containerRef={containerRef} fromRef={r1n2} toRef={centerRef} duration={3} delay={0.5} />
-        <AnimatedBeam containerRef={containerRef} fromRef={r1n3} toRef={centerRef} duration={3} delay={1.0} />
-        <AnimatedBeam containerRef={containerRef} fromRef={r1n4} toRef={centerRef} duration={3} delay={1.5} />
-        <AnimatedBeam containerRef={containerRef} fromRef={r1n5} toRef={centerRef} duration={3} delay={2.0} />
-        <AnimatedBeam containerRef={containerRef} fromRef={r1n6} toRef={centerRef} duration={3} delay={2.5} />
-        
-        <AnimatedBeam containerRef={containerRef} fromRef={r2n1} toRef={centerRef} duration={4} curvature={30} />
-        <AnimatedBeam containerRef={containerRef} fromRef={r2n2} toRef={centerRef} duration={4} delay={0.8} curvature={20} />
-        <AnimatedBeam containerRef={containerRef} fromRef={r2n3} toRef={centerRef} duration={4} delay={1.6} />
-        <AnimatedBeam containerRef={containerRef} fromRef={r2n4} toRef={centerRef} duration={4} delay={2.4} curvature={-20} />
-        <AnimatedBeam containerRef={containerRef} fromRef={r2n5} toRef={centerRef} duration={4} delay={3.2} curvature={-30} />
+                  return (
+                    <div
+                      key={skill.label}
+                      className="flex items-center gap-3 rounded-2xl border border-white/8 bg-[#101015] p-3 transition duration-300 hover:border-white/15 hover:bg-[#15151d]"
+                    >
+                      <div className="grid size-12 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                        <Icon className={cn("size-7", skill.className)} />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-sm font-semibold text-white">{skill.label}</div>
+                        <div
+                          className="mt-0.5 truncate text-[11px] uppercase tracking-[0.08em] text-white/35"
+                          style={{ fontFamily: "var(--font-dm-mono, monospace)" }}
+                        >
+                          {skill.value}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          </FadeIn>
+        ))}
       </div>
     </div>
   );

@@ -4,14 +4,14 @@ import Link from "next/link";
 import { PROJECTS, STATUS_STYLE } from "@/lib/marketing-data";
 import { FadeIn } from "@/components/marketing/FadeIn";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
-import { Box, Code2, Cpu, Sparkles } from "lucide-react";
+import { Code2, Cpu, Sparkles, Utensils } from "lucide-react";
 
 const getIcon = (id: string) => {
   switch (id) {
     case "frontend-daily":
       return <Sparkles className="h-5 w-5 text-white" />;
-    case "html-css-layout":
-      return <Box className="h-5 w-5 text-white" />;
+    case "real-time-food-delivery":
+      return <Utensils className="h-5 w-5 text-white" />;
     case "js-async":
       return <Cpu className="h-5 w-5 text-white" />;
     default:
@@ -152,15 +152,17 @@ export function MarketingProjects() {
                         {project.tech.map((t) => (
                           <span
                             key={t}
+                            className="transition duration-300 group-hover:border-purple-400/25 group-hover:text-purple-100"
                             style={{
                               fontFamily: "var(--font-dm-mono, monospace)",
                               fontSize: 10,
-                              color: "#555",
-                              background: "#161616",
-                              border: "1px solid rgba(255,255,255,0.05)",
-                              padding: "4px 10px",
-                              borderRadius: 6,
-                              letterSpacing: "0.03em",
+                              color: "#b8a9d6",
+                              background: "linear-gradient(180deg, rgba(156,64,255,0.14), rgba(255,255,255,0.035))",
+                              border: "1px solid rgba(156,64,255,0.18)",
+                              padding: "5px 11px",
+                              borderRadius: 999,
+                              letterSpacing: "0.04em",
+                              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
                             }}
                           >
                             {t}

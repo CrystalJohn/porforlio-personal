@@ -39,7 +39,7 @@ export function MarketingHero() {
           }}
         >
           Learn by doing — building projects, solving real problems, và growing every
-          single day. 40-day roadmap từ HTML semantics đến TypeScript + Next.js.
+          single day.
         </p>
 
         <div className="flex flex-wrap items-center gap-3">
